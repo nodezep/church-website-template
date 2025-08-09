@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sustainable mobility for cities | Bolt</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+        }
+        .cookie-modal {
+            animation: slideUp 0.5s ease-out;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        .transport-tool:hover .tool-icon {
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-gray-800">
+    <!-- Cookie Consent Modal -->
+    <div class="fixed inset-x-0 bottom-0 z-50 cookie-modal bg-white shadow-lg rounded-t-lg p-6 max-w-4xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-center">
+            <div class="flex-1 mb-4 md:mb-0">
+                <h3 class="text-lg font-bold mb-2">This website uses cookies</h3>
+                <p class="text-sm text-gray-600 mb-4">
+                    We use cookies for website functionality, to understand how you interact with the website, 
+                    to improve your browsing experience, and for ad personalisation.
+                </p>
+                <a href="https://bolt.eu/en/cookie-declaration/" class="text-blue-500 text-sm hover:underline">Check our Cookie declaration for more information and preferences.</a>
+            </div>
+            <div class="flex flex-col space-y-2">
+                <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded">
+                    Reject all
+                </button>
+                <button class="bg-gray-800 hover:bg-gray-900 text-white font-medium py-2 px-4 rounded">
+                    Allow selection
+                </button>
+                <button class="gradient-bg hover:bg-blue-600 text-white font-medium py-2 px-4 rounded">
+                    Allow all
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-8">
+                    <a href="https://bolt.eu/" class="flex items-center">
+                        <img src="https://cities-and-airports.bolt.eu/static/7948e3225da9f3fac496346bffdf391f/cee1f/bolt-logo.webp" alt="Bolt" class="h-8">
+                    </a>
+                    
+                    <nav class="hidden lg:flex space-x-6">
+                        <div class="dropdown relative">
+                            <button class="flex items-center font-medium hover:text-blue-500">
+                                Products <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                            </button>
+                            <div class="dropdown-menu absolute hidden mt-2 py-2 w-48 bg-white rounded-md shadow-lg z-50">
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100">Rides</a>
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100">Scooters</a>
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100">Bolt Market</a>
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100">Bolt Food</a>
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100">Bolt Drive</a>
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100">Bolt Business</a>
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100">E-bikes</a>
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100">Bolt Plus</a>
+                            </div>
+                        </div>
+                        <a href="#" class="font-medium hover:text-blue-500">Earn with Bolt</a>
+                        <a href="#" class="font-medium hover:text-blue-500">Company</a>
+                        <a href="#" class="font-medium hover:text-blue-500">Safety</a>
+                        <a href="#" class="font-medium hover:text-blue-500">Support</a>
+                        <a href="#" class="font-medium text-blue-500">Cities</a>
+                    </nav>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="hidden md:flex items-center space-x-2">
+                        <img src="https://flagcdn.com/w20/tz.png" alt="Tanzania" class="w-5 h-3">
+                        <span class="text-sm">EN</span>
+                    </div>
+                    <a href="#" class="hidden md:block text-sm font-medium hover:text-blue-500">Support</a>
+                    <a href="#" class="hidden md:block bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded font-medium">Register</a>
+                    <button class="lg:hidden text-gray-600">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative bg-gray-50 py-20">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col lg:flex-row items-center">
+                <div class="lg:w-1/2 mb-10 lg:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">Rethinking urban transport</h1>
+                    <p class="text-lg text-gray-600 mb-8">
+                        Our goal is to help cities find sustainable transport solutions, developing and sharing knowledge 
+                        and real-time data to improve the lives of their citizens.
+                    </p>
+                    <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+                        <a href="#" class="gradient-bg hover:bg-blue-600 text-white font-medium py-3 px-6 rounded-lg text-center">
+                            Contact us
+                        </a>
+                        <a href="#" class="border border-gray-300 hover:bg-gray-100 text-gray-800 font-medium py-3 px-6 rounded-lg text-center">
+                            Download the app
+                        </a>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 lg:pl-12">
+                    <img src="https://cities-and-airports.bolt.eu/static/f2eaa38d08d3906af0ad9b610ad7bc9e/b17a4/desktop.webp" 
+                         alt="Sustainable urban transport" 
+                         class="rounded-lg shadow-xl w-full">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Micromobility Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-12 text-center">Managing micromobility</h2>
+            <p class="text-lg text-gray-600 mb-12 max-w-3xl mx-auto text-center">
+                Operating fleets of light vehicles in 200+ cities has given us a unique understanding of the importance 
+                of strong local regulations. Micromobility in cities can be handled in a couple of different ways.
+            </p>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-blue-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-money-bill-wave text-blue-500 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Street rental fees for micromobility</h3>
+                    </div>
+                    <img src="https://cities-and-airports.bolt.eu/static/caaa2b112fe64e965a8569f345d9ddb4/1e482/feature-1-desktop.webp" 
+                         alt="Street rental fees" 
+                         class="w-full h-48 object-cover rounded-lg mb-6">
+                    <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                        <li>Provides cities with extra revenue — for infrastructure improvements or other transportation initiatives.</li>
+                        <li>Prevents operators from placing too many vehicles on the street, minimising costs.</li>
+                        <li>Encourages operators to take measures that result in maximum vehicle usage.</li>
+                        <li>Frees up public space by reducing idle electric scooters and bikes.</li>
+                    </ol>
+                </div>
+                
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-green-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-file-contract text-green-500 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Authorisations for private operators</h3>
+                    </div>
+                    <img src="https://cities-and-airports.bolt.eu/static/146e933a50d25ec4fbd49034a4ffc95d/1e482/feature-2-desktop.webp" 
+                         alt="Authorisations for private operators" 
+                         class="w-full h-48 object-cover rounded-lg mb-6">
+                    <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                        <li>Operators must submit a file showing their operational plans and compliance with all local regulations.</li>
+                        <li>Require operators to regularly share data so the municipality can monitor regulatory compliance.</li>
+                        <li>Introduce utilisation targets to manage fleet size, and encourage regular use of the service.</li>
+                        <li>Give a city more power to enforce local rules.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Transport Tools Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-12 text-center">Tools to reshape city transport</h2>
+            
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <button class="transport-tool flex items-center justify-center py-3 px-4 bg-white rounded-lg shadow-sm hover:shadow-md transition">
+                    <i class="fas fa-scooter text-blue-500 text-xl mr-2 tool-icon"></i>
+                    <span>E-scooters</span>
+                </button>
+                <button class="transport-tool flex items-center justify-center py-3 px-4 bg-white rounded-lg shadow-sm hover:shadow-md transition">
+                    <i class="fas fa-bicycle text-green-500 text-xl mr-2 tool-icon"></i>
+                    <span>E-bikes</span>
+                </button>
+                <button class="transport-tool flex items-center justify-center py-3 px-4 bg-white rounded-lg shadow-sm hover:shadow-md transition">
+                    <i class="fas fa-car text-purple-500 text-xl mr-2 tool-icon"></i>
+                    <span>Car sharing</span>
+                </button>
+                <button class="transport-tool flex items-center justify-center py-3 px-4 bg-white rounded-lg shadow-sm hover:shadow-md transition">
+                    <i class="fas fa-route text-yellow-500 text-xl mr-2 tool-icon"></i>
+                    <span>Multimodal travel</span>
+                </button>
+                <button class="transport-tool flex items-center justify-center py-3 px-4 bg-white rounded-lg shadow-sm hover:shadow-md transition">
+                    <i class="fas fa-walking text-red-500 text-xl mr-2 tool-icon"></i>
+                    <span>Walking</span>
+                </button>
+                <button class="transport-tool flex items-center justify-center py-3 px-4 bg-white rounded-lg shadow-sm hover:shadow-md transition">
+                    <i class="fas fa-charging-station text-indigo-500 text-xl mr-2 tool-icon"></i>
+                    <span>Charging docks</span>
+                </button>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="md:flex">
+                    <div class="md:w-1/2">
+                        <img src="https://cities-and-airports.bolt.eu/static/0f20a35ec816bb398acd6ef53611a2ad/1e482/e-scooters-desktop.webp" 
+                             alt="E-scooters" 
+                             class="w-full h-full object-cover">
+                    </div>
+                    <div class="md:w-1/2 p-8">
+                        <h3 class="text-2xl font-bold mb-4">E-scooters</h3>
+                        <p class="text-gray-600 mb-4">
+                            E-scooter use is transforming urban environments by reducing CO₂ emissions, congestion, and pollution.
+                        </p>
+                        <p class="text-gray-600 mb-4">
+                            As the largest European scooter operator, we're focused on delivering safe and sustainable micromobility operations.
+                        </p>
+                        <p class="text-gray-600">
+                            Scooters complement public transport and help riders go about their daily tasks in a more sustainable way.
+                            In many major European cities more than 30% of Bolt scooter trips begin and end within 100 metres of a public transport stop.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Safety Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-12 text-center">Safety as a priority</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-gray-50 p-6 rounded-lg">
+                    <div class="bg-blue-100 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                        <i class="fas fa-shield-alt text-blue-500 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Unique safety features</h3>
+                    <p class="text-gray-600">
+                        Innovative safety features, like our patented tandem riding prevention system, and a cognitive reaction test help to prevent riding under the influence of alcohol or other substances and raise awareness of its dangers.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-50 p-6 rounded-lg">
+                    <div class="bg-green-100 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                        <i class="fas fa-graduation-cap text-green-500 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Educating riders</h3>
+                    <p class="text-gray-600">
+                        We encourage responsible usage of e-vehicles to ensure the safety of riders and the wider public. Our Safety Toolkit allows riders to use a Beginner Mode, learn about local rules, and read safety instructions and tips.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-50 p-6 rounded-lg">
+                    <div class="bg-purple-100 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                        <i class="fas fa-parking text-purple-500 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Parking responsibly</h3>
+                    <p class="text-gray-600">
+                        We educate our users to park responsibly and encourage them to report bad examples they see on the streets. Additionally, our <a href="#" class="text-blue-500 hover:underline">AI technology</a> detects parking violations and shows riders how to park their scooters safely.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sustainability Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Sustainability</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Our Sustainability Policy is part of Bolt's on-going commitment to reduce the environmental footprint of our products.
+                </p>
+                <a href="#" class="inline-block mt-4 text-blue-500 font-medium hover:underline">Our Sustainability Strategy</a>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <div class="bg-green-100 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                        <i class="fas fa-leaf text-green-500 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Sustainable operations</h3>
+                    <p class="text-gray-600">
+                        Sustainable practices power our processes. Using electric vehicles for internal operations, and renewable energy in our warehouses and offices are just two examples. We're committed to bringing green transport options to cities and offsetting our CO₂ emissions.
+                    </p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <div class="bg-blue-100 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                        <i class="fas fa-certificate text-blue-500 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">The highest environmental standards</h3>
+                    <p class="text-gray-600">
+                        We're proud to be ISO 14001:2015 certified. We're committed to enhancing our environmental management system, putting in place effective procedures that minimise our environmental impact.
+                    </p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <div class="bg-purple-100 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                        <i class="fas fa-bus text-purple-500 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Popularising greener transport</h3>
+                    <p class="text-gray-600">
+                        We actively work to reduce the number of short car trips in cities by encouraging the use of greener methods. We also incentivise users to opt for these modes through in-app messages and promotions, resulting in a <a href="#" class="text-blue-500 hover:underline">up to 200% rise</a> in e-scooter use.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 gradient-bg text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-6">We're here to help</h2>
+            <p class="text-xl mb-8 max-w-3xl mx-auto">
+                As the largest micromobility operator in Europe, we're keen to share our experiences and advise local governments on micromobility solutions.
+            </p>
+            <a href="#" class="inline-block bg-white text-blue-600 font-medium py-3 px-8 rounded-lg hover:bg-gray-100 transition">
+                Get the app
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Bolt</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Rides</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Food delivery</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Grocery delivery</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Scooters</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Car-sharing</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Business</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Airports</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Cities</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Partner with Bolt</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Register as a driver</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Register as a courier</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Register as a merchant</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Fleets</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Franchise</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">About us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Careers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Sustainability at Bolt</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Press</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Brand guidelines</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Request a ride</h3>
+                    <div class="mb-6">
+                        <p class="text-gray-400 mb-2">Get the app</p>
+                        <div class="flex space-x-3">
+                            <a href="#" class="bg-black text-white p-2 rounded">
+                                <i class="fab fa-apple text-xl"></i>
+                            </a>
+                            <a href="#" class="bg-black text-white p-2 rounded">
+                                <i class="fab fa-google-play text-xl"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 mb-2">Order food</p>
+                        <div class="flex space-x-3">
+                            <a href="#" class="bg-black text-white p-2 rounded">
+                                <i class="fab fa-apple text-xl"></i>
+                            </a>
+                            <a href="#" class="bg-black text-white p-2 rounded">
+                                <i class="fab fa-google-play text-xl"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="flex space-x-4 mb-4 md:mb-0">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                    
+                    <div class="text-gray-400 text-sm">
+                        © 2025 Bolt Technology OÜ
+                    </div>
+                    
+                    <div class="flex flex-wrap justify-center space-x-4 mt-4 md:mt-0">
+                        <a href="#" class="text-gray-400 hover:text-white text-sm">Suppliers</a>
+                        <a href="#" class="text-gray-400 hover:text-white text-sm">Terms & Conditions</a>
+                        <a href="#" class="text-gray-400 hover:text-white text-sm">Privacy</a>
+                        <a href="#" class="text-gray-400 hover:text-white text-sm">Cookies</a>
+                        <a href="#" class="text-gray-400 hover:text-white text-sm">Security</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple script to handle the transport tools tabs
+        document.addEventListener('DOMContentLoaded', function() {
+            const transportTools = document.querySelectorAll('.transport-tool');
+            
+            transportTools.forEach(tool => {
+                tool.addEventListener('click', function() {
+                    // Remove active class from all tools
+                    transportTools.forEach(t => t.classList.remove('bg-blue-50', 'border-blue-500'));
+                    
+                    // Add active class to clicked tool
+                    this.classList.add('bg-blue-50', 'border-blue-500');
+                    
+                    // Here you would typically load content for the selected transport tool
+                    // For this example, we're just showing a simple alert
+                    alert(`Loading content for: ${this.textContent.trim()}`);
+                });
+            });
+            
+            // Close cookie modal when clicking "Allow all"
+            const allowAllBtn = document.querySelector('.cookie-modal button.bg-blue-500');
+            if (allowAllBtn) {
+                allowAllBtn.addEventListener('click', function() {
+                    document.querySelector('.cookie-modal').style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
