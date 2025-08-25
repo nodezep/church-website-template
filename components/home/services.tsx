@@ -2,29 +2,60 @@
 
 import { motion } from "framer-motion"
 import { Heart, BookOpen, Users, Clock } from "lucide-react"
+import { useState, useEffect } from "react"
+import { fetchHomeContent } from "@/lib/supabase-helpers"
 
-const services = [
+// Define the correct type for services content
+interface Service {
+  title: string
+  time: string
+  description: string
+  icon: string
+}
+
+interface ServicesContent {
+  services: Service[]
+}
+
+const defaultServices: Service[] = [
   {
     title: "Sunday Worship",
     time: "9:00 AM",
     description: "Join us for inspiring worship, powerful messages, and heartfelt community.",
-    icon: Heart,
+    icon: "Heart"
   },
   {
     title: "Bible Study",
     time: "10:30 AM",
     description: "Dive deeper into God's Word with interactive study and discussion.",
-    icon: BookOpen,
+    icon: "BookOpen"
   },
   {
     title: "Evening Service",
     time: "7:00 PM",
     description: "A more intimate gathering for prayer, worship, and fellowship.",
-    icon: Users,
-  },
+    icon: "Users"
+  }
 ]
 
 export default function Services() {
+  const [services, setServices] = useState<Service[]>(defaultServices)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      const content = await fetchHomeContent("services") as ServicesContent | null
+      if (content?.services && content.services.length > 0) {
+        setServices(content.services)
+      }
+      setLoading(false)
+    }
+
+    fetchServices()
+  }, [])
+
+  if (loading) return <div className="py-20 bg-gray-50 animate-pulse"></div>
+
   return (
     <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -37,10 +68,13 @@ export default function Services() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {services.map((service, index) => {
-            const IconComponent = service.icon
+            let IconComponent = Heart // Default icon
+            if (service.icon === "BookOpen") IconComponent = BookOpen
+            if (service.icon === "Users") IconComponent = Users
+            
             return (
               <motion.div
-                key={service.title}
+                key={index}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}

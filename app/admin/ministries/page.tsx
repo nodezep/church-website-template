@@ -30,8 +30,21 @@ interface Ministry {
   features: string[]
   image_url?: string
   icon: string
+  color: string
   active: boolean
   created_at: string
+  // New fields
+  hero_title: string
+  hero_description: string
+  story_title: string
+  story_content: string[]
+  story_image_url?: string
+  leaders: Array<{
+    name: string
+    role: string
+    description: string
+    image_url: string
+  }>
 }
 
 export default function AdminMinistriesPage() {
@@ -47,10 +60,30 @@ export default function AdminMinistriesPage() {
     features: [] as string[],
     image_url: "",
     icon: "",
+    color: "bg-blue-500",
     active: true,
+    // New fields
+    hero_title: "",
+    hero_description: "",
+    story_title: "",
+    story_content: [] as string[],
+    story_image_url: "",
+    leaders: [] as Array<{
+      name: string
+      role: string
+      description: string
+      image_url: string
+    }>
   })
 
   const [newFeature, setNewFeature] = useState("")
+  const [newLeader, setNewLeader] = useState({
+    name: "",
+    role: "",
+    description: "",
+    image_url: ""
+  })
+  const [showLeaderForm, setShowLeaderForm] = useState(false)
 
   useEffect(() => {
     fetchMinistries()
@@ -120,7 +153,14 @@ export default function AdminMinistriesPage() {
       features: ministry.features,
       image_url: ministry.image_url || "",
       icon: ministry.icon,
+      color: ministry.color,
       active: ministry.active,
+      hero_title: ministry.hero_title,
+      hero_description: ministry.hero_description,
+      story_title: ministry.story_title,
+      story_content: ministry.story_content,
+      story_image_url: ministry.story_image_url || "",
+      leaders: ministry.leaders || []
     })
     setIsDialogOpen(true)
   }
@@ -160,6 +200,26 @@ export default function AdminMinistriesPage() {
     setFormData({ ...formData, features: formData.features.filter((_, i) => i !== index) })
   }
 
+  const addLeader = () => {
+    if (newLeader.name.trim() && newLeader.role.trim()) {
+      setFormData({ 
+        ...formData, 
+        leaders: [...formData.leaders, { ...newLeader }] 
+      })
+      setNewLeader({
+        name: "",
+        role: "",
+        description: "",
+        image_url: ""
+      })
+      setShowLeaderForm(false)
+    }
+  }
+
+  const removeLeader = (index: number) => {
+    setFormData({ ...formData, leaders: formData.leaders.filter((_, i) => i !== index) })
+  }
+
   const resetForm = () => {
     setFormData({
       title: "",
@@ -167,9 +227,22 @@ export default function AdminMinistriesPage() {
       features: [],
       image_url: "",
       icon: "",
+      color: "bg-blue-500",
       active: true,
+      hero_title: "",
+      hero_description: "",
+      story_title: "",
+      story_content: [],
+      story_image_url: "",
+      leaders: []
     })
     setNewFeature("")
+    setNewLeader({
+      name: "",
+      role: "",
+      description: "",
+      image_url: ""
+    })
   }
 
   const openNewDialog = () => {
@@ -196,22 +269,35 @@ export default function AdminMinistriesPage() {
               Add Ministry
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{editingMinistry ? "Edit Ministry" : "Add New Ministry"}</DialogTitle>
               <DialogDescription>
                 {editingMinistry ? "Update the ministry details below." : "Fill in the details for the new ministry."}
               </DialogDescription>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="title">Ministry Title</Label>
-                <Input
-                  id="title"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  required
-                />
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Basic Info */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="title">Ministry Title</Label>
+                  <Input
+                    id="title"
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="icon">Icon Name</Label>
+                  <Input
+                    id="icon"
+                    placeholder="e.g., Users, Heart, Baby"
+                    value={formData.icon}
+                    onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                    required
+                  />
+                </div>
               </div>
 
               <div>
@@ -224,30 +310,89 @@ export default function AdminMinistriesPage() {
                 />
               </div>
 
-              <div>
-                <Label htmlFor="icon">Icon Name (Lucide React)</Label>
-                <Input
-                  id="icon"
-                  placeholder="e.g., Users, Heart, Baby, Music"
-                  value={formData.icon}
-                  onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                  required
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="color">Color Class</Label>
+                  <Input
+                    id="color"
+                    placeholder="e.g., bg-blue-500"
+                    value={formData.color}
+                    onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="image_url">Image URL</Label>
+                  <Input
+                    id="image_url"
+                    type="url"
+                    value={formData.image_url}
+                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                  />
+                </div>
               </div>
 
-              <div>
-                <Label htmlFor="image_url">Image URL</Label>
-                <Input
-                  id="image_url"
-                  type="url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  placeholder="https://..."
-                />
+              {/* Hero Section */}
+              <div className="border-t pt-4">
+                <h3 className="text-lg font-semibold mb-4">Hero Section</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="hero_title">Hero Title</Label>
+                    <Input
+                      id="hero_title"
+                      value={formData.hero_title}
+                      onChange={(e) => setFormData({ ...formData, hero_title: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="hero_description">Hero Description</Label>
+                    <Textarea
+                      id="hero_description"
+                      value={formData.hero_description}
+                      onChange={(e) => setFormData({ ...formData, hero_description: e.target.value })}
+                      rows={3}
+                    />
+                  </div>
+                </div>
               </div>
 
-              <div>
-                <Label>Features</Label>
+              {/* Story Section */}
+              <div className="border-t pt-4">
+                <h3 className="text-lg font-semibold mb-4">Story Section</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="story_title">Story Title</Label>
+                    <Input
+                      id="story_title"
+                      value={formData.story_title}
+                      onChange={(e) => setFormData({ ...formData, story_title: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="story_image_url">Story Image URL</Label>
+                    <Input
+                      id="story_image_url"
+                      value={formData.story_image_url}
+                      onChange={(e) => setFormData({ ...formData, story_image_url: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <Label htmlFor="story_content">Story Content (one paragraph per line)</Label>
+                  <Textarea
+                    id="story_content"
+                    value={formData.story_content.join('\n')}
+                    onChange={(e) => setFormData({ 
+                      ...formData, 
+                      story_content: e.target.value.split('\n').filter(p => p.trim())
+                    })}
+                    rows={4}
+                  />
+                </div>
+              </div>
+
+              {/* Features */}
+              <div className="border-t pt-4">
+                <h3 className="text-lg font-semibold mb-4">Features</h3>
                 <div className="space-y-2">
                   <div className="flex gap-2">
                     <Input
@@ -270,6 +415,72 @@ export default function AdminMinistriesPage() {
                       </Badge>
                     ))}
                   </div>
+                </div>
+              </div>
+
+              {/* Leaders */}
+              <div className="border-t pt-4">
+                <h3 className="text-lg font-semibold mb-4">Ministry Leaders</h3>
+                {!showLeaderForm ? (
+                  <Button type="button" onClick={() => setShowLeaderForm(true)}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Leader
+                  </Button>
+                ) : (
+                  <div className="space-y-4 p-4 border rounded-lg">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label>Name</Label>
+                        <Input
+                          value={newLeader.name}
+                          onChange={(e) => setNewLeader({...newLeader, name: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label>Role</Label>
+                        <Input
+                          value={newLeader.role}
+                          onChange={(e) => setNewLeader({...newLeader, role: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label>Description</Label>
+                      <Textarea
+                        value={newLeader.description}
+                        onChange={(e) => setNewLeader({...newLeader, description: e.target.value})}
+                        rows={2}
+                      />
+                    </div>
+                    <div>
+                      <Label>Image URL</Label>
+                      <Input
+                        value={newLeader.image_url}
+                        onChange={(e) => setNewLeader({...newLeader, image_url: e.target.value})}
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button type="button" onClick={addLeader}>
+                        Add Leader
+                      </Button>
+                      <Button type="button" variant="outline" onClick={() => setShowLeaderForm(false)}>
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
+                <div className="mt-4 space-y-2">
+                  {formData.leaders.map((leader, index) => (
+                    <div key={index} className="flex items-center justify-between p-2 border rounded">
+                      <div>
+                        <div className="font-medium">{leader.name}</div>
+                        <div className="text-sm text-gray-600">{leader.role}</div>
+                      </div>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => removeLeader(index)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
                 </div>
               </div>
 

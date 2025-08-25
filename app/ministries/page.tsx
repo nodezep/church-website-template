@@ -15,7 +15,18 @@ interface Ministry {
   icon: string
   color: string
   features: string[]
-  image_url: string
+  image_url?: string
+  hero_title?: string
+  hero_description?: string
+  story_title?: string
+  story_content?: string[]
+  story_image_url?: string
+  leaders?: Array<{
+    name: string
+    role: string
+    description: string
+    image_url?: string
+  }>
 }
 
 // Map icon strings to actual components
@@ -135,15 +146,20 @@ export default function MinistriesPage() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-2 mb-6">
-                        {ministry.features?.map((feature, idx) => (
+                        {ministry.features?.slice(0, 3).map((feature, idx) => (
                           <div key={idx} className="flex items-center text-sm text-gray-600">
                             <ArrowRight className="w-4 h-4 text-blue-500 mr-2" />
-                            {feature}
+                            <span className="line-clamp-1">{feature}</span>
                           </div>
                         ))}
+                        {ministry.features && ministry.features.length > 3 && (
+                          <div className="text-sm text-gray-500">
+                            +{ministry.features.length - 3} more features
+                          </div>
+                        )}
                       </div>
-                      <Button className="w-full bg-transparent" variant="outline">
-                        Learn More
+                      <Button asChild className="w-full bg-transparent" variant="outline">
+                        <Link href={`/ministries/${ministry.id}`}>Learn More</Link>
                       </Button>
                     </CardContent>
                   </Card>

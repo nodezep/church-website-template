@@ -1,6 +1,7 @@
+// app/admin/settings/page.tsx
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,26 +10,28 @@ import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
 import { Save, Upload, Trash2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
+import { getSettings, updateSettings } from "@/lib/settingsService"
 
 export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(false)
+  const [initializing, setInitializing] = useState(true)
   const { toast } = useToast()
 
   const [churchInfo, setChurchInfo] = useState({
-    name: "Jerusalem Spiritual Centre",
-    tagline: "Faith, Hope, Love",
-    address: "123 Faith Street, Hope City, HC 12345",
-    phone: "+1 (555) 123-4567",
-    email: "info@jsc.com",
-    website: "https://jsc.com",
-    description: "A place where faith, hope, and love come together in community.",
+    name: "",
+    tagline: "",
+    address: "",
+    phone: "",
+    email: "",
+    website: "",
+    description: "",
   })
 
   const [serviceSchedule, setServiceSchedule] = useState({
-    sunday_morning: "9:00 AM & 10:30 AM",
-    wednesday_prayer: "7:00 PM",
-    friday_youth: "6:30 PM",
-    saturday_mens: "8:00 AM (1st Saturday)",
+    sunday_morning: "",
+    wednesday_prayer: "",
+    friday_youth: "",
+    saturday_mens: "",
   })
 
   const [socialMedia, setSocialMedia] = useState({
@@ -39,21 +42,67 @@ export default function AdminSettingsPage() {
   })
 
   const [seoSettings, setSeoSettings] = useState({
-    meta_title: "Jerusalem Spiritual Centre - Faith, Hope, Love",
-    meta_description: "Welcome to Jerusalem Spiritual Centre, where faith, hope, and love come together in community.",
-    keywords: "church, faith, community, worship, Jerusalem Spiritual Centre",
+    meta_title: "",
+    meta_description: "",
+    keywords: "",
   })
+
+  // Load settings from database on component mount
+  useEffect(() => {
+    async function loadSettings() {
+      try {
+        const settings = await getSettings()
+        if (settings) {
+          setChurchInfo({
+            name: settings.name || "",
+            tagline: settings.tagline || "",
+            address: settings.address || "",
+            phone: settings.phone || "",
+            email: settings.email || "",
+            website: settings.website || "",
+            description: settings.description || "",
+          })
+          
+          if (settings.service_schedule) {
+            setServiceSchedule(settings.service_schedule)
+          }
+          
+          if (settings.social_media) {
+            setSocialMedia(settings.social_media)
+          }
+          
+          if (settings.seo) {
+            setSeoSettings(settings.seo)
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load settings:", error)
+        toast({
+          title: "Error",
+          description: "Failed to load settings",
+          variant: "destructive",
+        })
+      } finally {
+        setInitializing(false)
+      }
+    }
+    
+    loadSettings()
+  }, [toast])
 
   const handleSaveChurchInfo = async () => {
     setLoading(true)
     try {
-      // In a real implementation, this would save to Supabase or your database
-      await new Promise((resolve) => setTimeout(resolve, 1000)) // Simulate API call
-
-      toast({
-        title: "Success",
-        description: "Church information updated successfully",
-      })
+      const success = await updateSettings("church_info", churchInfo)
+      
+      if (success) {
+        toast({
+          title: "Success",
+          description: "Church information updated successfully",
+        })
+      } else {
+        throw new Error("Failed to update church information")
+      }
     } catch (error) {
       toast({
         title: "Error",
@@ -68,12 +117,16 @@ export default function AdminSettingsPage() {
   const handleSaveServiceSchedule = async () => {
     setLoading(true)
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      toast({
-        title: "Success",
-        description: "Service schedule updated successfully",
-      })
+      const success = await updateSettings("service_schedule", serviceSchedule)
+      
+      if (success) {
+        toast({
+          title: "Success",
+          description: "Service schedule updated successfully",
+        })
+      } else {
+        throw new Error("Failed to update service schedule")
+      }
     } catch (error) {
       toast({
         title: "Error",
@@ -88,12 +141,16 @@ export default function AdminSettingsPage() {
   const handleSaveSocialMedia = async () => {
     setLoading(true)
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      toast({
-        title: "Success",
-        description: "Social media links updated successfully",
-      })
+      const success = await updateSettings("social_media", socialMedia)
+      
+      if (success) {
+        toast({
+          title: "Success",
+          description: "Social media links updated successfully",
+        })
+      } else {
+        throw new Error("Failed to update social media links")
+      }
     } catch (error) {
       toast({
         title: "Error",
@@ -108,12 +165,16 @@ export default function AdminSettingsPage() {
   const handleSaveSEO = async () => {
     setLoading(true)
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      toast({
-        title: "Success",
-        description: "SEO settings updated successfully",
-      })
+      const success = await updateSettings("seo", seoSettings)
+      
+      if (success) {
+        toast({
+          title: "Success",
+          description: "SEO settings updated successfully",
+        })
+      } else {
+        throw new Error("Failed to update SEO settings")
+      }
     } catch (error) {
       toast({
         title: "Error",
@@ -123,6 +184,17 @@ export default function AdminSettingsPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (initializing) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading settings...</p>
+        </div>
+      </div>
+    )
   }
 
   return (

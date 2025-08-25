@@ -23,6 +23,11 @@ const menuItems = [
     icon: Home,
   },
   {
+    title: "Home",
+    url: "/admin/home",
+    icon: Home,
+  },
+  {
     title: "Sermons",
     url: "/admin/sermons",
     icon: FileText,

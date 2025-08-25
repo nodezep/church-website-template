@@ -44,6 +44,11 @@ const adminMenuItems = [
     icon: LayoutDashboard,
   },
   {
+    title: "Home",
+    url: "/admin/home",
+    icon: LayoutDashboard,
+  },
+  {
     title: "Sermons",
     url: "/admin/sermons",
     icon: FileText,

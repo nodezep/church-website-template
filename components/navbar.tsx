@@ -4,7 +4,10 @@ import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Menu, X, Church } from "lucide-react"
+import { Menu, X } from "lucide-react"
+
+// Import the image like a module
+import jscLogo from "@/components/assets/jsc.png"
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -24,10 +27,15 @@ export default function Navbar() {
     <nav className="bg-white shadow-lg fixed w-full z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
+          {/* Logo Section */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <Church className="h-8 w-8 text-blue-600" />
-              <span className="text-xl font-bold text-gray-900">JSC</span>
+              <img
+                src={jscLogo.src}   // ✅ use imported image
+                alt="JSC Logo"
+                className="h-18 w-auto rounded-md"
+              />
+              {/* <span className="text-xl font-bold text-gray-900">JSC</span> */}
             </Link>
           </div>
 
@@ -56,6 +64,7 @@ export default function Navbar() {
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="text-gray-700 hover:text-blue-600 focus:outline-none focus:text-blue-600"
+              aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>

@@ -5,40 +5,56 @@ import { motion } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { fetchHomeContent } from "@/lib/supabase-helpers"
 
-const heroSlides = [
+// Define the correct type for hero content
+interface HeroSlide {
+  image: string
+  title: string
+  subtitle: string
+  cta: string
+  link: string
+}
+
+interface HeroContent {
+  slides: HeroSlide[]
+}
+
+const defaultSlides: HeroSlide[] = [
   {
     image: "/placeholder.svg?height=800&width=1200&text=Church+Sanctuary",
-    title: "Welcome to Jerusalem Spiritual Centre",
-    subtitle: "A place where faith, hope, and love come together",
-    cta: "Visit Us",
-    link: "/contact",
-  },
-  {
-    image: "/placeholder.svg?height=800&width=1200&text=Community+Worship",
-    title: "Join Our Community",
-    subtitle: "Experience authentic worship and meaningful connections",
-    cta: "Explore Ministries",
-    link: "/ministries",
-  },
-  {
-    image: "/placeholder.svg?height=800&width=1200&text=Community+Service",
-    title: "Serve Together",
-    subtitle: "Making a difference in our community through love and service",
-    cta: "Get Involved",
-    link: "/ministries#outreach",
-  },
+    title: "Welcome to Our Church",
+    subtitle: "Join us for worship this Sunday",
+    cta: "Learn More",
+    link: "/about"
+  }
 ]
 
 export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [heroSlides, setHeroSlides] = useState<HeroSlide[]>(defaultSlides)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroSlides.length)
-    }, 5000)
-    return () => clearInterval(timer)
+    const fetchHeroSlides = async () => {
+      const content = await fetchHomeContent("hero") as HeroContent | null
+      if (content?.slides && content.slides.length > 0) {
+        setHeroSlides(content.slides)
+      }
+      setLoading(false)
+    }
+
+    fetchHeroSlides()
   }, [])
+
+  useEffect(() => {
+    if (heroSlides.length > 0) {
+      const timer = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % heroSlides.length)
+      }, 5000)
+      return () => clearInterval(timer)
+    }
+  }, [heroSlides])
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % heroSlides.length)
@@ -48,14 +64,25 @@ export default function Hero() {
     setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)
   }
 
+  if (loading) return <div className="h-screen bg-gray-200 animate-pulse"></div>
+  if (heroSlides.length === 0) return null
+
+  const currentSlideData = heroSlides[currentSlide]
+
   return (
     <section className="relative h-screen overflow-hidden">
       <div className="absolute inset-0">
-        <img
-          className="w-full h-full object-cover transition-opacity duration-1000"
-          alt={`Hero slide ${currentSlide + 1}`}
-          src={heroSlides[currentSlide].image || "/placeholder.svg"}
-        />
+        {currentSlideData.image.match(/\.(mp4|webm)$/i) ? (
+          <video autoPlay loop muted className="w-full h-full object-cover">
+            <source src={currentSlideData.image} type="video/mp4" />
+          </video>
+        ) : (
+          <img
+            className="w-full h-full object-cover transition-opacity duration-1000"
+            alt={`Hero slide ${currentSlide + 1}`}
+            src={currentSlideData.image}
+          />
+        )}
         <div className="absolute inset-0 bg-black/40"></div>
       </div>
 
@@ -68,7 +95,7 @@ export default function Hero() {
             transition={{ duration: 0.8 }}
             className="text-5xl md:text-7xl font-bold mb-6"
           >
-            {heroSlides[currentSlide].title}
+            {currentSlideData.title}
           </motion.h1>
           <motion.p
             key={`subtitle-${currentSlide}`}
@@ -77,7 +104,7 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-xl md:text-2xl mb-8 text-gray-200"
           >
-            {heroSlides[currentSlide].subtitle}
+            {currentSlideData.subtitle}
           </motion.p>
           <motion.div
             key={`cta-${currentSlide}`}
@@ -85,9 +112,9 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            <Link href={heroSlides[currentSlide].link}>
+            <Link href={currentSlideData.link}>
               <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg rounded-full font-semibold transition-all duration-300 hover:shadow-xl">
-                {heroSlides[currentSlide].cta}
+                {currentSlideData.cta}
               </Button>
             </Link>
           </motion.div>
@@ -96,18 +123,18 @@ export default function Hero() {
 
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full transition-all duration-300"
+        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full transition-all duration-300 z-20"
       >
         <ChevronLeft className="w-6 h-6" />
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full transition-all duration-300"
+        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full transition-all duration-300 z-20"
       >
         <ChevronRight className="w-6 h-6" />
       </button>
 
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
         {heroSlides.map((_, index) => (
           <button
             key={index}
