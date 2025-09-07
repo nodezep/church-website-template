@@ -13,6 +13,7 @@ const navigation = [
   { name: "Home", href: "/" },
   { name: "About", href: "/about" },
   { name: "Ministries", href: "/ministries" },
+  { name: "Kids", href: "/kids" },
   { name: "JSC Zones", href: "/jsc-zones" },
   { name: "Events", href: "/events" },
   { name: "Sermons", href: "/sermons" },
@@ -47,14 +48,14 @@ export default function Navbar() {
                 href={item.href}
                 className={`px-3 py-2 text-sm font-medium transition-colors duration-200 ${
                   pathname === item.href
-                    ? "text-blue-600 border-b-2 border-blue-600"
-                    : "text-gray-700 hover:text-blue-600"
+                    ? "text-yellow-600 border-b-2 border-yellow-600"
+                    : "text-gray-700 hover:text-yellow-600"
                 }`}
               >
                 {item.name}
               </Link>
             ))}
-            <Button asChild className="bg-blue-600 hover:bg-blue-700">
+            <Button asChild className="bg-yellow-600 hover:bg-yellow-700">
               <Link href="/contact">Visit Us</Link>
             </Button>
           </div>
@@ -63,7 +64,7 @@ export default function Navbar() {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-gray-700 hover:text-blue-600 focus:outline-none focus:text-blue-600"
+              className="text-gray-700 hover:text-yellow-600 focus:outline-none focus:text-yellow-600"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -82,8 +83,8 @@ export default function Navbar() {
                 href={item.href}
                 className={`block px-3 py-2 text-base font-medium transition-colors duration-200 ${
                   pathname === item.href
-                    ? "text-blue-600 bg-blue-50"
-                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                    ? "text-yellow-600 bg-yellow-50"
+                    : "text-gray-700 hover:text-yellow-600 hover:bg-gray-50"
                 }`}
                 onClick={() => setMobileMenuOpen(false)}
               >
@@ -91,7 +92,7 @@ export default function Navbar() {
               </Link>
             ))}
             <div className="px-3 py-2">
-              <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
+              <Button asChild className="w-full bg-yellow-600 hover:bg-yellow-700">
                 <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
                   Visit Us
                 </Link>

@@ -134,7 +134,7 @@ export default function AdminDashboard() {
       description: "Add or edit life groups",
       href: "/admin/zones",
       icon: Users,
-      color: "bg-purple-500",
+      color: "bg-yellow-500",
     },
     {
       title: "View Messages",

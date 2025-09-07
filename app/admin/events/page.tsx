@@ -56,7 +56,7 @@ export default function AdminEventsPage() {
   })
 
   const categories = [
-    { id: "worship", name: "Worship", color: "bg-purple-500" },
+    { id: "worship", name: "Worship", color: "bg-yellow-500" },
     { id: "community", name: "Community", color: "bg-blue-500" },
     { id: "outreach", name: "Outreach", color: "bg-green-500" },
     { id: "youth", name: "Youth", color: "bg-orange-500" },

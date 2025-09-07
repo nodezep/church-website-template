@@ -3,8 +3,10 @@ import Hero from "@/components/home/hero"
 import Services from "@/components/home/services"
 import ChildrensMinistry from "@/components/home/childrens-ministry"
 import Mission from "@/components/home/mission"
+import PastorSection from "@/components/home/pastor-section"
 import Events from "@/components/home/events"
 import SermonSection from "@/components/home/sermon-section"
+import TestimonySection from "@/components/home/testimony-section"
 import Newsletter from "@/components/home/newsletter"
 
 export default function HomePage() {
@@ -15,8 +17,10 @@ export default function HomePage() {
         <Services />
         <ChildrensMinistry />
         <Mission />
+        <PastorSection />
         <Events />
         <SermonSection />
+        <TestimonySection />
         <Newsletter />
       </Suspense>
     </div>

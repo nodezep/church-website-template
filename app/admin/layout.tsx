@@ -69,6 +69,21 @@ const adminMenuItems = [
     icon: Church,
   },
   {
+    title: "Kids Page",
+    url: "/admin/kids",
+    icon: Users,
+  },
+  {
+    title: "Pastor Profile",
+    url: "/admin/pastor",
+    icon: Church,
+  },
+  {
+    title: "Testimonials",
+    url: "/admin/testimonials",
+    icon: MessageSquare,
+  },
+  {
     title: "Messages",
     url: "/admin/messages",
     icon: MessageSquare,

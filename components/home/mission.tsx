@@ -15,15 +15,15 @@ export default function Mission() {
           </p>
           <div className="flex flex-wrap justify-center gap-6 text-lg text-gray-600">
             <div className="flex items-center">
-              <Heart className="w-6 h-6 text-blue-600 mr-2" />
+              <Heart className="w-6 h-6 text-yellow-600 mr-2" />
               <span>Love</span>
             </div>
             <div className="flex items-center">
-              <Users className="w-6 h-6 text-blue-600 mr-2" />
+              <Users className="w-6 h-6 text-yellow-600 mr-2" />
               <span>Community</span>
             </div>
             <div className="flex items-center">
-              <BookOpen className="w-6 h-6 text-blue-600 mr-2" />
+              <BookOpen className="w-6 h-6 text-yellow-600 mr-2" />
               <span>Truth</span>
             </div>
           </div>
