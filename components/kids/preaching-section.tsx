@@ -4,6 +4,9 @@ import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { BookOpen, Lightbulb, Users, Heart } from "lucide-react"
+import Link from "next/link"
+import { useEffect, useState } from "react"
+import { fetchKidsSection } from "@/lib/kidsService"
 
 const preachingFeatures = [
   {
@@ -39,6 +42,20 @@ const preachingImages = [
 ]
 
 export default function PreachingSection() {
+  const [content, setContent] = useState<{ description: string; features: string[] }>({ description: "", features: [] })
+  const [cta, setCta] = useState<{ title: string; description: string; primaryText: string; primaryLink: string; secondaryText?: string; secondaryLink?: string }>({ title: "", description: "", primaryText: "", primaryLink: "" })
+  const [images, setImages] = useState<string[]>([])
+
+  useEffect(() => {
+    const load = async () => {
+      const { content, cta, gallery } = await fetchKidsSection("kids_preaching")
+      setContent({ description: content.description, features: content.features || [] })
+      setCta(cta)
+      setImages((gallery || []).map((g: any) => g.image_url))
+    }
+    load()
+  }, [])
+
   return (
     <section className="py-20 bg-gradient-to-br from-blue-50 to-cyan-100">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -50,7 +67,7 @@ export default function PreachingSection() {
         >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Kids Preaching</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            God's word shared in ways that inspire, teach, and transform young hearts
+            {content.description || "God's word shared in ways that inspire, teach, and transform young hearts"}
           </p>
         </motion.div>
 
@@ -81,7 +98,7 @@ export default function PreachingSection() {
             </div>
 
             <div className="space-y-4">
-              {preachingFeatures.map((feature, index) => (
+              {(content.features && content.features.length ? content.features.map((f) => ({ title: f, description: "", icon: BookOpen, color: "from-blue-400 to-cyan-500" })) : preachingFeatures).map((feature: any, index: number) => (
                 <motion.div 
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
@@ -109,7 +126,7 @@ export default function PreachingSection() {
             className="space-y-4"
           >
             <div className="space-y-4">
-              {preachingImages.map((image, index) => (
+              {(images.length ? images : preachingImages).map((image, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, scale: 0.8 }}
@@ -142,17 +159,19 @@ export default function PreachingSection() {
           className="text-center"
         >
           <div className="bg-white rounded-2xl p-8 shadow-lg">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Join Our Kids Service</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">{cta.title || "Join Our Kids Service"}</h3>
             <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-              Every Sunday at 11:00 AM, we have a special kids service with preaching designed just for children.
+              {cta.description || "Every Sunday at 11:00 AM, we have a special kids service with preaching designed just for children."}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-                Join Kids Service
-              </button>
-              <button className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-                View Sermons
-              </button>
+              <Link href={cta.primaryLink || "/contact"} className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                {cta.primaryText || "Join Kids Service"}
+              </Link>
+              {cta.secondaryText ? (
+                <Link href={cta.secondaryLink || "/kids"} className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                  {cta.secondaryText}
+                </Link>
+              ) : null}
             </div>
           </div>
         </motion.div>

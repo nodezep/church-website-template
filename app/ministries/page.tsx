@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import LogoLoader from "@/components/logo-loader"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 interface Ministry {
@@ -71,11 +72,7 @@ export default function MinistriesPage() {
   }, [])
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-xl">Loading ministries...</div>
-      </div>
-    )
+    return <LogoLoader fullScreen />
   }
 
   if (error) {

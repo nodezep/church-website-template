@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useState, useEffect } from "react"
+import LogoLoader from "@/components/logo-loader"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 interface Event {
@@ -100,11 +101,7 @@ export default function EventsPage() {
   }
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-xl">Loading events...</div>
-      </div>
-    )
+    return <LogoLoader fullScreen />
   }
 
   if (error) {
@@ -304,9 +301,6 @@ export default function EventsPage() {
                         {event.location}
                       </div>
                     </div>
-                    <Button className="w-full bg-transparent" variant="outline">
-                      Learn More
-                    </Button>
                   </CardContent>
                 </Card>
               </motion.div>

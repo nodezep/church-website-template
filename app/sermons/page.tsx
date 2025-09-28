@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import LogoLoader from "@/components/logo-loader"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -49,7 +50,7 @@ export default function SermonsPage() {
     sermon.title.toLowerCase().includes(searchTerm.toLowerCase())
   )
   
-  if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>
+  if (loading) return <LogoLoader fullScreen />
 
   return (
     <div className="min-h-screen">

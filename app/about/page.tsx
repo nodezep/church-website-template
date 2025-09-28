@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { Heart, Users, BookOpen, Globe } from "lucide-react"
 import { useEffect, useState } from "react"
+import LogoLoader from "@/components/logo-loader"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 interface AboutPageData {
@@ -80,11 +81,7 @@ export default function AboutPage() {
   }, [])
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-xl">Loading about page...</div>
-      </div>
-    )
+    return <LogoLoader fullScreen />
   }
 
   if (!aboutData) {

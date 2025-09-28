@@ -1,447 +1,606 @@
 "use client"
 
-import { useState } from "react"
-import { useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { 
-  Users, 
-  Car, 
-  BookOpen, 
-  Church, 
-  Music, 
-  Mic, 
-  Gamepad2, 
-  MapPin,
-  Save,
-  Edit,
-  Trash2,
-  Plus
-} from "lucide-react"
+import { Loader2, Plus, Trash2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
-import { fetchKidsClasses, upsertKidsClasses, fetchKidsTransport, upsertKidsTransport, fetchKidsGallery, upsertKidsGallery, deleteKidsGallery } from "@/lib/kidsService"
+import { fetchKidsGallery, upsertKidsGallery, deleteKidsGallery } from "@/lib/kidsService"
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
-export default function KidsAdminPage() {
+type KidsCTAContent = {
+  title: string
+  description: string
+  primaryText: string
+  primaryLink: string
+  secondaryText?: string
+  secondaryLink?: string
+}
+
+export default function AdminKidsPage() {
   const { toast } = useToast()
-  const [activeTab, setActiveTab] = useState("classes")
-  const [gallerySection, setGallerySection] = useState<string>("transport")
-  const [galleryItems, setGalleryItems] = useState<any[]>([])
+  const supabase = createClientComponentClient()
 
-  // Sample data - in a real app, this would come from a database
-  const [kidsClasses, setKidsClasses] = useState([
-    {
-      name: "Nazareth",
-      age_range: "Ages 3-9",
-      description: "Our youngest learners discover God's love through stories, songs, and creative activities.",
-      capacity: "15-20 kids",
-      features: ["Bible Stories", "Creative Crafts", "Fun Songs", "Play Time"]
-    },
-    {
-      name: "Galilee", 
-      age_range: "Ages 10-12",
-      description: "Growing in faith through interactive lessons, games, and meaningful discussions.",
-      capacity: "20-25 kids",
-      features: ["Interactive Lessons", "Team Games", "Memory Verses", "Friendship Building"]
-    },
-    {
-      name: "Jerusalem",
-      age_range: "Ages 13-18", 
-      description: "Teens explore deeper faith concepts and build lasting relationships with God and peers.",
-      capacity: "25-30 teens",
-      features: ["Deep Bible Study", "Leadership Skills", "Mission Projects", "Peer Mentoring"]
-    }
-  ])
+  const [activeTab, setActiveTab] = useState("transport")
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
 
-  const [transportInfo, setTransportInfo] = useState({
-    description: "We provide safe and reliable transportation to ensure every child can join us for church activities",
-    sunday_pickup: "8:30 AM",
-    sunday_dropoff: "12:00 PM", 
-    wednesday_time: "6:00 PM",
-    features: [
-      "All vehicles are regularly inspected and drivers are background checked",
-      "Reliable pickup and drop-off times to fit your family's schedule",
-      "We serve multiple neighborhoods to make church accessible to all"
-    ]
-  })
+  const SECTIONS: { key: string; label: string }[] = [
+    { key: "transport", label: "Transport" },
+    { key: "sunday_devotion", label: "Sunday Devotion" },
+    { key: "saturday_devotion", label: "Saturday Devotion" },
+    { key: "discipleship_prayer", label: "Discipleship & Prayer" },
+    { key: "praise_worship", label: "Praise & Worship" },
+    { key: "kids_preaching", label: "Kids Preaching" },
+    { key: "fun_games_sports", label: "Fun Games & Sports" },
+    { key: "fun_tours_adventures", label: "Fun Tours & Adventures" },
+  ]
 
-  const handleSave = () => {
-    toast({
-      title: "Success",
-      description: "Kids page content has been saved successfully!",
-    })
+  type SectionContent = {
+    description: string
+    sunday_pickup: string
+    sunday_dropoff: string
+    wednesday_time: string
+    features: string[]
   }
+
+  const defaultContent: SectionContent = {
+    description: "",
+    sunday_pickup: "",
+    sunday_dropoff: "",
+    wednesday_time: "",
+    features: [],
+  }
+
+  const getDefaults = (sectionKey: string): { content: SectionContent; cta: KidsCTAContent; gallery: { section: string; image_url: string; caption?: string; order_index?: number }[] } => {
+    switch (sectionKey) {
+      case "transport":
+        return {
+          content: {
+            description:
+              "We provide safe and reliable transportation to ensure every child can join us for church activities",
+            sunday_pickup: "8:30 AM",
+            sunday_dropoff: "12:00 PM",
+            wednesday_time: "6:00 PM",
+            features: ["Safe & Secure", "On Time", "Wide Coverage"],
+          },
+          cta: {
+            title: "Need Transport?",
+            description:
+              "Contact us to arrange transportation for your child. We're here to help make church accessible for your family.",
+            primaryText: "Request Transport",
+            primaryLink: "/contact",
+            secondaryText: "View Routes",
+            secondaryLink: "/kids#routes",
+          },
+          gallery: [
+            { section: sectionKey, image_url: "/placeholder.jpg" },
+            { section: sectionKey, image_url: "/placeholder.jpg" },
+            { section: sectionKey, image_url: "/placeholder.jpg" },
+            { section: sectionKey, image_url: "/placeholder.jpg" },
+          ],
+        }
+      case "sunday_devotion":
+        return {
+          content: {
+            description:
+              "A special time for children to connect with God through stories, prayer, and meaningful activities",
+            sunday_pickup: "10:00 AM",
+            sunday_dropoff: "",
+            wednesday_time: "",
+            features: ["Bible Stories", "Prayer Time", "Group Discussion", "Memory Verses"],
+          },
+          cta: {
+            title: "Join Our Sunday Devotion",
+            description:
+              "Every Sunday at 10:00 AM, we gather for a special time of learning and growing in faith together.",
+            primaryText: "Join This Sunday",
+            primaryLink: "/contact",
+            secondaryText: "Learn More",
+            secondaryLink: "/kids",
+          },
+          gallery: [
+            { section: sectionKey, image_url: "/placeholder.jpg" },
+            { section: sectionKey, image_url: "/placeholder.jpg" },
+            { section: sectionKey, image_url: "/placeholder.jpg" },
+          ],
+        }
+      case "discipleship_prayer":
+        return {
+          content: {
+            description:
+              "Building deep spiritual foundations through prayer, mentorship, and meaningful relationships",
+            sunday_pickup: "",
+            sunday_dropoff: "",
+            wednesday_time: "6:00 PM",
+            features: ["Prayer Circles", "Bible Study", "Mentorship", "Heart Sharing"],
+          },
+          cta: {
+            title: "Join Our Discipleship Program",
+            description:
+              "Every Wednesday at 6:00 PM, we gather for prayer, Bible study, and spiritual growth together.",
+            primaryText: "Join Discipleship",
+            primaryLink: "/contact",
+            secondaryText: "Prayer Requests",
+            secondaryLink: "/kids",
+          },
+          gallery: [
+            { section: sectionKey, image_url: "/placeholder.jpg" },
+            { section: sectionKey, image_url: "/placeholder.jpg" },
+            { section: sectionKey, image_url: "/placeholder.jpg" },
+          ],
+        }
+      case "praise_worship":
+        return {
+          content: {
+            description:
+              "Celebrating God's love through music, song, and joyful worship together",
+            sunday_pickup: "10:30 AM",
+            sunday_dropoff: "",
+            wednesday_time: "",
+            features: ["Kids Choir", "Praise Team", "Dance Ministry", "Heart of Worship"],
+          },
+          cta: {
+            title: "Join Our Worship Team",
+            description:
+              "Every Sunday at 10:30 AM, we gather for a time of joyful worship and praise together.",
+            primaryText: "Join Worship",
+            primaryLink: "/contact",
+            secondaryText: "Learn Songs",
+            secondaryLink: "/kids",
+          },
+          gallery: [
+            { section: sectionKey, image_url: "/placeholder.jpg" },
+            { section: sectionKey, image_url: "/placeholder.jpg" },
+            { section: sectionKey, image_url: "/placeholder.jpg" },
+          ],
+        }
+      case "fun_games_sports":
+        return {
+          content: {
+            description:
+              "Learning and growing through play, sports, and fun activities that build character and friendships",
+            sunday_pickup: "",
+            sunday_dropoff: "",
+            wednesday_time: "Saturday 2:00 PM",
+            features: ["Fun Games", "Sports Activities", "Team Building", "Character Building"],
+          },
+          cta: {
+            title: "Join Our Games & Sports",
+            description:
+              "Every Saturday at 2:00 PM, we have fun games and sports activities for all ages.",
+            primaryText: "Join Games",
+            primaryLink: "/contact",
+            secondaryText: "View Schedule",
+            secondaryLink: "/kids",
+          },
+          gallery: [
+            { section: sectionKey, image_url: "/placeholder.jpg" },
+            { section: sectionKey, image_url: "/placeholder.jpg" },
+            { section: sectionKey, image_url: "/placeholder.jpg" },
+          ],
+        }
+      case "kids_preaching":
+        return {
+          content: {
+            description: "Children sharing the Word in age-appropriate ways and learning to communicate truth.",
+            sunday_pickup: "",
+            sunday_dropoff: "",
+            wednesday_time: "",
+            features: ["Practice Sessions", "Short Messages", "Peer Feedback", "Confidence Building"],
+          },
+          cta: {
+            title: "Join Kids Preaching",
+            description: "Sign up to participate in kids preaching and develop communication skills.",
+            primaryText: "Sign Up",
+            primaryLink: "/contact",
+            secondaryText: "Learn More",
+            secondaryLink: "/kids",
+          },
+          gallery: [
+            { section: sectionKey, image_url: "/placeholder.jpg" },
+            { section: sectionKey, image_url: "/placeholder.jpg" },
+          ],
+        }
+      case "saturday_devotion":
+        return {
+          content: {
+            description: "Weekend devotion time focused on reflection, prayer, and community.",
+            sunday_pickup: "",
+            sunday_dropoff: "",
+            wednesday_time: "Saturday",
+            features: ["Quiet Time", "Group Sharing", "Prayer Walk", "Worship"],
+          },
+          cta: {
+            title: "Join Saturday Devotion",
+            description: "Connect with God and friends during our Saturday devotion.",
+            primaryText: "Join",
+            primaryLink: "/contact",
+            secondaryText: "Schedule",
+            secondaryLink: "/kids",
+          },
+          gallery: [{ section: sectionKey, image_url: "/placeholder.jpg" }],
+        }
+      case "fun_tours_adventures":
+        return {
+          content: {
+            description: "Exciting outings and adventures that help kids explore, learn, and grow together.",
+            sunday_pickup: "",
+            sunday_dropoff: "",
+            wednesday_time: "",
+            features: ["Field Trips", "Nature Walks", "Museum Visits", "Camp Days"],
+          },
+          cta: {
+            title: "Join Our Next Adventure",
+            description: "Be part of our next fun tour or adventure!",
+            primaryText: "Get Notified",
+            primaryLink: "/contact",
+            secondaryText: "View Trips",
+            secondaryLink: "/kids",
+          },
+          gallery: [
+            { section: sectionKey, image_url: "/placeholder.jpg" },
+            { section: sectionKey, image_url: "/placeholder.jpg" },
+          ],
+        }
+      default:
+        return { content: { ...defaultContent }, cta: { title: "Get Involved", description: "", primaryText: "Contact Us", primaryLink: "/contact" }, gallery: [] }
+    }
+  }
+
+  const [contentMap, setContentMap] = useState<Record<string, SectionContent>>({})
+  const [ctaMap, setCtaMap] = useState<Record<string, KidsCTAContent>>({})
+  const [galleryMap, setGalleryMap] = useState<Record<string, { id?: string; section: string; image_url: string; caption?: string; order_index?: number }[]>>({})
+  const [newFeature, setNewFeature] = useState("")
+  const [newImageUrl, setNewImageUrl] = useState("")
+  const [newImageCaption, setNewImageCaption] = useState("")
 
   useEffect(() => {
     const load = async () => {
-      const cls = await fetchKidsClasses()
-      if (cls.length) setKidsClasses(cls as any)
-      const tr = await fetchKidsTransport()
-      if (tr) setTransportInfo(tr as any)
+      try {
+        setLoading(true)
+        // Load only the active section initially for speed
+        await loadSection(activeTab)
+      } catch (err) {
+        console.error(err)
+        toast({ title: "Error", description: "Failed to load kids content", variant: "destructive" })
+      } finally {
+        setLoading(false)
+      }
     }
     load()
-  }, [])
+  }, [supabase, toast])
 
-  useEffect(() => {
-    const loadGallery = async () => {
-      const data = await fetchKidsGallery(gallerySection)
-      setGalleryItems(data as any)
+  const loadSection = async (sectionKey: string) => {
+    try {
+      // Content
+      const { data: contentRow } = await supabase
+        .from("home_content")
+        .select("content")
+        .eq("component_type", `kids_${sectionKey}`)
+        .single()
+
+      const defaults = getDefaults(sectionKey)
+      const content: SectionContent = (contentRow?.content as SectionContent) || defaults.content
+      setContentMap((prev) => ({ ...prev, [sectionKey]: content }))
+
+      // CTA
+      const { data: ctaRow } = await supabase
+        .from("home_content")
+        .select("content")
+        .eq("component_type", `kids_${sectionKey}_cta`)
+        .single()
+
+      const cta: KidsCTAContent = (ctaRow?.content as KidsCTAContent) || defaults.cta
+      setCtaMap((prev) => ({ ...prev, [sectionKey]: cta }))
+
+      // Gallery
+      const g = await fetchKidsGallery(sectionKey)
+      setGalleryMap((prev) => ({ ...prev, [sectionKey]: (g && g.length > 0 ? g : defaults.gallery) }))
+    } catch (err) {
+      console.error("loadSection error", err)
     }
-    loadGallery()
-  }, [gallerySection])
+  }
+
+  const saveSectionContent = async (sectionKey: string) => {
+    try {
+      setSaving(true)
+      const content = contentMap[sectionKey] || { ...defaultContent }
+
+      const { data: existing } = await supabase
+        .from("home_content")
+        .select("id")
+        .eq("component_type", `kids_${sectionKey}`)
+        .single()
+
+      if (existing) {
+        const { error } = await supabase
+          .from("home_content")
+          .update({ content, updated_at: new Date().toISOString() })
+          .eq("component_type", `kids_${sectionKey}`)
+        if (error) throw error
+      } else {
+        const { error } = await supabase
+          .from("home_content")
+          .insert({ component_type: `kids_${sectionKey}`, content, is_active: true })
+        if (error) throw error
+      }
+
+      toast({ title: "Saved", description: "Section info updated" })
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message || "Failed to save section", variant: "destructive" })
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const addFeature = () => {
+    if (!newFeature.trim()) return
+    const key = activeTab
+    const current = contentMap[key] || { ...defaultContent }
+    setContentMap((prev) => ({ ...prev, [key]: { ...current, features: [...(current.features || []), newFeature.trim()] } }))
+    setNewFeature("")
+  }
+
+  const removeFeature = (index: number) => {
+    const key = activeTab
+    const current = contentMap[key] || { ...defaultContent }
+    setContentMap((prev) => ({ ...prev, [key]: { ...current, features: (current.features || []).filter((_, i) => i !== index) } }))
+  }
+
+  const addImage = () => {
+    if (!newImageUrl.trim()) return
+    const key = activeTab
+    const prev = galleryMap[key] || []
+    const updated = [
+      ...prev,
+      { section: key, image_url: newImageUrl.trim(), caption: newImageCaption.trim(), order_index: prev.length },
+    ]
+    setGalleryMap((m) => ({ ...m, [key]: updated }))
+    setNewImageUrl("")
+    setNewImageCaption("")
+  }
+
+  const removeImage = async (index: number, id?: string) => {
+    try {
+      if (id) await deleteKidsGallery(id)
+      const key = activeTab
+      setGalleryMap((prev) => ({ ...prev, [key]: (prev[key] || []).filter((_, i) => i !== index) }))
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message || "Failed to delete image", variant: "destructive" })
+    }
+  }
+
+  const saveGallery = async () => {
+    try {
+      setSaving(true)
+      const key = activeTab
+      const list = galleryMap[key] || []
+      const normalized = list.map((item, i) => ({ ...item, section: key, order_index: i }))
+      await upsertKidsGallery(normalized)
+      toast({ title: "Saved", description: "Gallery updated" })
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message || "Failed to save gallery", variant: "destructive" })
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const saveCTA = async () => {
+    try {
+      setSaving(true)
+      const key = activeTab
+      const cta = ctaMap[key]
+
+      const { data: existing } = await supabase
+        .from("home_content")
+        .select("id")
+        .eq("component_type", `kids_${key}_cta`)
+        .single()
+
+      if (existing) {
+        const { error } = await supabase
+          .from("home_content")
+          .update({ content: cta, updated_at: new Date().toISOString() })
+          .eq("component_type", `kids_${key}_cta`)
+        if (error) throw error
+      } else {
+        const { error } = await supabase
+          .from("home_content")
+          .insert({ component_type: `kids_${key}_cta`, content: cta, is_active: true })
+        if (error) throw error
+      }
+
+      toast({ title: "Saved", description: "CTA section updated" })
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message || "Failed to save CTA", variant: "destructive" })
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  // Lazy-load data when switching tabs
+  useEffect(() => {
+    if (!contentMap[activeTab] || !ctaMap[activeTab] || !galleryMap[activeTab]) {
+      loadSection(activeTab)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab])
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="animate-spin h-8 w-8 text-blue-500" />
+      </div>
+    )
+  }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Kids Page Management</h1>
-          <p className="text-gray-600 mt-2">Manage all content for the kids ministry page</p>
-        </div>
-        <Button onClick={handleSave} className="bg-yellow-600 hover:bg-yellow-700">
-          <Save className="w-4 h-4 mr-2" />
-          Save All Changes
-        </Button>
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold">Kids Page Management</h1>
+        <p className="text-gray-600">Edit transport info, schedules, images and CTA</p>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-9">
-          <TabsTrigger value="classes">Classes</TabsTrigger>
-          <TabsTrigger value="transport">Transport</TabsTrigger>
-          <TabsTrigger value="devotion">Devotion</TabsTrigger>
-          <TabsTrigger value="discipleship">Discipleship</TabsTrigger>
-          <TabsTrigger value="worship">Worship</TabsTrigger>
-          <TabsTrigger value="preaching">Preaching</TabsTrigger>
-          <TabsTrigger value="games">Games</TabsTrigger>
-          <TabsTrigger value="tours">Tours</TabsTrigger>
-          <TabsTrigger value="gallery">Gallery</TabsTrigger>
+      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v)}>
+        <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 w-full">
+          {SECTIONS.map((s) => (
+            <TabsTrigger key={s.key} value={s.key}>{s.label}</TabsTrigger>
+          ))}
         </TabsList>
 
-        {/* Kids Classes Tab */}
-        <TabsContent value="classes" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Users className="w-5 h-5 mr-2" />
-                Kids Classes Management
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {kidsClasses.map((classItem, index) => (
-                <Card key={(classItem as any).id ?? `${classItem.name}-${index}`} className="border-l-4 border-l-yellow-500">
-                  <CardContent className="pt-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <label className="text-sm font-medium">Class Name</label>
-                            <Input value={classItem.name} onChange={(e)=>{
-                              const v = e.target.value; setKidsClasses((prev:any)=> prev.map((c:any,i:number)=> i===index ? { ...c, name: v } : c))
-                            }} />
-                          </div>
-                          <div>
-                            <label className="text-sm font-medium">Age Range</label>
-                            <Input value={(classItem as any).age_range ?? ''} onChange={(e)=>{
-                              const v = e.target.value; setKidsClasses((prev:any)=> prev.map((c:any,i:number)=> i===index ? { ...c, age_range: v } : c))
-                            }} />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex space-x-2">
-                        <Button variant="outline" size="sm" className="text-red-600" onClick={()=>{
-                          setKidsClasses((prev:any)=> prev.filter((_:any,i:number)=> i!==index))
-                        }}>
+        {SECTIONS.map((s) => {
+          const content = contentMap[s.key] || { ...defaultContent }
+          const cta = ctaMap[s.key] || {
+            title: "Get Involved",
+            description: "Reach out to participate or learn more about this activity.",
+            primaryText: "Contact Us",
+            primaryLink: "/contact",
+          }
+          const gallery = galleryMap[s.key] || []
+          return (
+            <TabsContent key={s.key} value={s.key} className="pt-6 space-y-6">
+              {/* Long form: Description, Schedule, Features, Gallery, CTA */}
+              <div>
+                <Label>Intro Description</Label>
+                <Textarea
+                  value={content.description}
+                  onChange={(e) => setContentMap((prev) => ({ ...prev, [s.key]: { ...(prev[s.key] || { ...defaultContent }), description: e.target.value } }))}
+                  className="min-h-[120px]"
+                  placeholder={s.key === "transport" ? "We provide safe and reliable transportation..." : "Describe this activity..."}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label>Sunday Pickup</Label>
+                  <Input
+                    value={content.sunday_pickup}
+                    onChange={(e) => setContentMap((prev) => ({ ...prev, [s.key]: { ...(prev[s.key] || { ...defaultContent }), sunday_pickup: e.target.value } }))}
+                    placeholder="8:30 AM"
+                  />
+                </div>
+                <div>
+                  <Label>Sunday Drop-off</Label>
+                  <Input
+                    value={content.sunday_dropoff}
+                    onChange={(e) => setContentMap((prev) => ({ ...prev, [s.key]: { ...(prev[s.key] || { ...defaultContent }), sunday_dropoff: e.target.value } }))}
+                    placeholder="12:00 PM"
+                  />
+                </div>
+                <div>
+                  <Label>Wednesday Time</Label>
+                  <Input
+                    value={content.wednesday_time}
+                    onChange={(e) => setContentMap((prev) => ({ ...prev, [s.key]: { ...(prev[s.key] || { ...defaultContent }), wednesday_time: e.target.value } }))}
+                    placeholder="6:00 PM"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <Label>Features</Label>
+                <div className="flex gap-2">
+                  <Input value={newFeature} onChange={(e) => setNewFeature(e.target.value)} placeholder="Add feature" />
+                  <Button type="button" onClick={addFeature}>
+                    <Plus className="w-4 h-4 mr-1" /> Add
+                  </Button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {(content.features || []).map((f, i) => (
+                    <Badge key={`${s.key}-f-${i}`} className="flex items-center gap-1">
+                      {f}
+                      <button onClick={() => removeFeature(i)} aria-label="remove">
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="md:col-span-2">
+                  <Label>Image URL</Label>
+                  <Input value={newImageUrl} onChange={(e) => setNewImageUrl(e.target.value)} placeholder="https://.../image.jpg" />
+                </div>
+                <div>
+                  <Label>Caption (optional)</Label>
+                  <Input value={newImageCaption} onChange={(e) => setNewImageCaption(e.target.value)} placeholder="Caption" />
+                </div>
+              </div>
+              <Button type="button" onClick={addImage} className="w-full md:w-auto">
+                <Plus className="w-4 h-4 mr-1" /> Add Image
+              </Button>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {gallery.map((item, idx) => (
+                  <Card key={item.id || `${s.key}-${idx}`}>
+                    <CardContent className="p-3 space-y-2">
+                      <img src={item.image_url} alt={item.caption || "gallery"} className="w-full h-40 object-cover rounded" />
+                      {item.caption ? <p className="text-sm text-gray-600">{item.caption}</p> : null}
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-gray-500">Order: {idx + 1}</span>
+                        <Button variant="destructive" size="sm" onClick={() => removeImage(idx, item.id)}>
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
-                    </div>
-                    <Textarea 
-                      value={classItem.description}
-                      onChange={(e)=>{
-                        const v = e.target.value; setKidsClasses((prev:any)=> prev.map((c:any,i:number)=> i===index ? { ...c, description: v } : c))
-                      }}
-                      className="mb-4"
-                      rows={3}
-                    />
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-sm font-medium">Capacity</label>
-                        <Input value={classItem.capacity}
-                          onChange={(e)=>{
-                            const v = e.target.value; setKidsClasses((prev:any)=> prev.map((c:any,i:number)=> i===index ? { ...c, capacity: v } : c))
-                          }}
-                        />
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium">Features (comma separated)</label>
-                        <Input value={classItem.features.join(", ")}
-                          onChange={(e)=>{
-                            const v = e.target.value.split(',').map((s)=> s.trim()).filter(Boolean)
-                            setKidsClasses((prev:any)=> prev.map((c:any,i:number)=> i===index ? { ...c, features: v } : c))
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-              <div className="flex justify-end">
-                <Button onClick={async ()=>{ try { await upsertKidsClasses(kidsClasses as any); toast({title:"Saved", description:"Classes saved."}) } catch(e:any){ toast({title:"Error", description:e.message, variant:"destructive"}) } }} className="bg-yellow-600 hover:bg-yellow-700">
-                  <Save className="w-4 h-4 mr-2" /> Save Classes
-                </Button>
-              </div>
-              <Button variant="outline" className="w-full" onClick={()=>{
-                setKidsClasses((prev:any)=> [...prev, { name: "New Class", age_range: "Ages 0-0", description: "", capacity: "", features: [] }])
-              }}>
-                <Plus className="w-4 h-4 mr-2" />
-                Add New Class
-              </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Kids Gallery Tab */}
-        <TabsContent value="gallery" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Gallery Manager</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div>
-                <label className="text-sm font-medium mr-3">Section</label>
-                <select className="border rounded px-3 py-2" value={gallerySection} onChange={(e)=>setGallerySection(e.target.value)}>
-                  {["transport","devotion","discipleship","worship","preaching","games","tours"].map((s)=> (<option key={s} value={s}>{s}</option>))}
-                </select>
-                <Button variant="outline" className="ml-3" onClick={()=> setGalleryItems((prev:any)=> [...prev, { section: gallerySection, image_url: "", caption: "", order_index: (prev?.length||0)+1 }])}>Add Image</Button>
-              </div>
-
-              {galleryItems.map((it:any, idx:number)=> (
-                <div key={it.id ?? idx} className="grid grid-cols-12 gap-3 items-end border rounded-lg p-3">
-                  <div className="col-span-4">
-                    <label className="text-sm font-medium">Image URL</label>
-                    <Input value={it.image_url} onChange={(e)=>{
-                      const v = e.target.value; setGalleryItems((prev:any)=> prev.map((p:any,i:number)=> i===idx ? { ...p, image_url: v } : p))
-                    }} />
-                  </div>
-                  <div className="col-span-4">
-                    <label className="text-sm font-medium">Caption</label>
-                    <Input value={it.caption || ""} onChange={(e)=>{
-                      const v = e.target.value; setGalleryItems((prev:any)=> prev.map((p:any,i:number)=> i===idx ? { ...p, caption: v } : p))
-                    }} />
-                  </div>
-                  <div className="col-span-2">
-                    <label className="text-sm font-medium">Order</label>
-                    <Input value={it.order_index ?? 0} onChange={(e)=>{
-                      const v = Number(e.target.value) || 0; setGalleryItems((prev:any)=> prev.map((p:any,i:number)=> i===idx ? { ...p, order_index: v } : p))
-                    }} />
-                  </div>
-                  <div className="col-span-2 flex justify-end">
-                    <Button variant="outline" className="text-red-600" onClick={async ()=>{
-                      if (it.id) {
-                        try { await deleteKidsGallery(it.id) } catch {}
-                      }
-                      setGalleryItems((prev:any)=> prev.filter((_:any,i:number)=> i!==idx))
-                    }}>Remove</Button>
-                  </div>
-                </div>
-              ))}
-
-              <div className="flex justify-end">
-                <Button onClick={async ()=>{
-                  try { await upsertKidsGallery(galleryItems.map((g:any)=> ({ id: g.id, section: gallerySection, image_url: g.image_url, caption: g.caption, order_index: g.order_index })) as any); toast({title:"Saved", description:"Gallery saved."}) } catch(e:any){ toast({title:"Error", description:e.message, variant:"destructive"}) }
-                }} className="bg-yellow-600 hover:bg-yellow-700">
-                  <Save className="w-4 h-4 mr-2" /> Save Gallery
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Transport Tab */}
-        <TabsContent value="transport" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Car className="w-5 h-5 mr-2" />
-                Transport Service Management
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div>
-                <label className="text-sm font-medium mb-2 block">Service Description</label>
-                <Textarea 
-                  value={transportInfo.description}
-                  rows={3}
-                />
-              </div>
-              
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Sunday Pickup Time</label>
-                  <Input value={transportInfo.sunday_pickup} onChange={(e)=> setTransportInfo((prev:any)=> ({ ...prev, sunday_pickup: e.target.value }))} />
-                </div>
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Sunday Drop-off Time</label>
-                  <Input value={transportInfo.sunday_dropoff} onChange={(e)=> setTransportInfo((prev:any)=> ({ ...prev, sunday_dropoff: e.target.value }))} />
-                </div>
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Wednesday Evening</label>
-                  <Input value={transportInfo.wednesday_time} onChange={(e)=> setTransportInfo((prev:any)=> ({ ...prev, wednesday_time: e.target.value }))} />
-                </div>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium mb-2 block">Service Features</label>
-                {transportInfo.features.map((feature, index) => (
-                  <div key={index} className="flex items-center space-x-2 mb-2">
-                    <Input value={feature} onChange={(e)=>{
-                      const v = e.target.value
-                      setTransportInfo((prev:any)=> ({ ...prev, features: prev.features.map((f:string,i:number)=> i===index ? v : f) }))
-                    }} />
-                    <Button variant="outline" size="sm" className="text-red-600" onClick={()=>{
-                      setTransportInfo((prev:any)=> ({ ...prev, features: prev.features.filter((_:string,i:number)=> i!==index) }))
-                    }}>
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
+                    </CardContent>
+                  </Card>
                 ))}
-                <Button variant="outline" size="sm" className="mt-2" onClick={()=> setTransportInfo((prev:any)=> ({ ...prev, features: [...prev.features, ""] }))}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Feature
-                </Button>
               </div>
-              <div className="flex justify-end">
-                <Button onClick={async ()=>{ try { await upsertKidsTransport(transportInfo as any); toast({title:"Saved", description:"Transport saved."}) } catch(e:any){ toast({title:"Error", description:e.message, variant:"destructive"}) } }} className="bg-yellow-600 hover:bg-yellow-700">
-                  <Save className="w-4 h-4 mr-2" /> Save Transport
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
 
-        {/* Other tabs with similar structure */}
-        <TabsContent value="devotion" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <BookOpen className="w-5 h-5 mr-2" />
-                Sunday Devotion Management
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">Manage Sunday devotion content, activities, and schedules.</p>
-              <div className="mt-4">
-                <Button variant="outline">
-                  <Edit className="w-4 h-4 mr-2" />
-                  Edit Devotion Content
-                </Button>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label>CTA Title</Label>
+                  <Input value={cta.title} onChange={(e) => setCtaMap((prev) => ({ ...prev, [s.key]: { ...(prev[s.key] || {} as KidsCTAContent), title: e.target.value } }))} />
+                </div>
+                <div>
+                  <Label>Primary Button Text</Label>
+                  <Input value={cta.primaryText} onChange={(e) => setCtaMap((prev) => ({ ...prev, [s.key]: { ...(prev[s.key] || {} as KidsCTAContent), primaryText: e.target.value } }))} />
+                </div>
+                <div>
+                  <Label>Primary Button Link</Label>
+                  <Input value={cta.primaryLink} onChange={(e) => setCtaMap((prev) => ({ ...prev, [s.key]: { ...(prev[s.key] || {} as KidsCTAContent), primaryLink: e.target.value } }))} />
+                </div>
+                <div>
+                  <Label>Secondary Button Text</Label>
+                  <Input value={cta.secondaryText || ""} onChange={(e) => setCtaMap((prev) => ({ ...prev, [s.key]: { ...(prev[s.key] || {} as KidsCTAContent), secondaryText: e.target.value } }))} />
+                </div>
+                <div>
+                  <Label>Secondary Button Link</Label>
+                  <Input value={cta.secondaryLink || ""} onChange={(e) => setCtaMap((prev) => ({ ...prev, [s.key]: { ...(prev[s.key] || {} as KidsCTAContent), secondaryLink: e.target.value } }))} />
+                </div>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+              <div>
+                <Label>CTA Description</Label>
+                <Textarea value={cta.description} onChange={(e) => setCtaMap((prev) => ({ ...prev, [s.key]: { ...(prev[s.key] || {} as KidsCTAContent), description: e.target.value } }))} className="min-h-[120px]" />
+              </div>
 
-        <TabsContent value="discipleship" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Church className="w-5 h-5 mr-2" />
-                Discipleship & Prayer Management
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">Manage discipleship programs, prayer circles, and mentorship activities.</p>
-              <div className="mt-4">
-                <Button variant="outline">
-                  <Edit className="w-4 h-4 mr-2" />
-                  Edit Discipleship Content
+              <div className="flex flex-col md:flex-row gap-3">
+                <Button onClick={() => saveSectionContent(s.key)} disabled={saving} className="md:w-auto w-full">
+                  {saving && activeTab === s.key ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  Save Section Info
+                </Button>
+                <Button onClick={saveGallery} disabled={saving} className="md:w-auto w-full" variant="outline">
+                  {saving && activeTab === s.key ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  Save Images
+                </Button>
+                <Button onClick={saveCTA} disabled={saving} className="md:w-auto w-full" variant="secondary">
+                  {saving && activeTab === s.key ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  Save CTA
                 </Button>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="worship" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Music className="w-5 h-5 mr-2" />
-                Praise & Worship Management
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">Manage worship teams, songs, and praise activities.</p>
-              <div className="mt-4">
-                <Button variant="outline">
-                  <Edit className="w-4 h-4 mr-2" />
-                  Edit Worship Content
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="preaching" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Mic className="w-5 h-5 mr-2" />
-                Kids Preaching Management
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">Manage kids preaching content, messages, and schedules.</p>
-              <div className="mt-4">
-                <Button variant="outline">
-                  <Edit className="w-4 h-4 mr-2" />
-                  Edit Preaching Content
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="games" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Gamepad2 className="w-5 h-5 mr-2" />
-                Games & Sports Management
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">Manage games, sports activities, and recreational programs.</p>
-              <div className="mt-4">
-                <Button variant="outline">
-                  <Edit className="w-4 h-4 mr-2" />
-                  Edit Games Content
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="tours" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <MapPin className="w-5 h-5 mr-2" />
-                Tours & Adventures Management
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">Manage tours, adventures, and educational trips.</p>
-              <div className="mt-4">
-                <Button variant="outline">
-                  <Edit className="w-4 h-4 mr-2" />
-                  Edit Tours Content
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            </TabsContent>
+          )
+        })}
       </Tabs>
     </div>
   )
 }
+
+

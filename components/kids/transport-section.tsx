@@ -4,6 +4,9 @@ import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Car, Shield, Clock, MapPin } from "lucide-react"
+import Link from "next/link"
+import { useEffect, useState } from "react"
+import { fetchKidsSection } from "@/lib/kidsService"
 
 const transportFeatures = [
   {
@@ -31,6 +34,25 @@ const transportImages = [
 ]
 
 export default function TransportSection() {
+  const [content, setContent] = useState<{ description: string; sunday_pickup: string; sunday_dropoff: string; wednesday_time: string; features: string[] }>({ description: "", sunday_pickup: "", sunday_dropoff: "", wednesday_time: "", features: [] })
+  const [cta, setCta] = useState<{ title: string; description: string; primaryText: string; primaryLink: string; secondaryText?: string; secondaryLink?: string }>({ title: "", description: "", primaryText: "", primaryLink: "" })
+  const [images, setImages] = useState<string[]>([])
+
+  useEffect(() => {
+    const load = async () => {
+      const { content, cta, gallery } = await fetchKidsSection("transport")
+      setContent({ 
+        description: content.description, 
+        sunday_pickup: content.sunday_pickup || "",
+        sunday_dropoff: content.sunday_dropoff || "",
+        wednesday_time: content.wednesday_time || "",
+        features: content.features || [] 
+      })
+      setCta(cta)
+      setImages((gallery || []).map((g: any) => g.image_url))
+    }
+    load()
+  }, [])
   return (
     <section className="py-20 bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -42,7 +64,7 @@ export default function TransportSection() {
         >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Safe Transport Service</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            We provide safe and reliable transportation to ensure every child can join us for church activities
+            {content.description || "We provide safe and reliable transportation to ensure every child can join us for church activities"}
           </p>
         </motion.div>
 
@@ -65,7 +87,7 @@ export default function TransportSection() {
             </div>
 
             <div className="space-y-6">
-              {transportFeatures.map((feature, index) => (
+              {(content.features && content.features.length ? content.features.map((f) => ({ title: f, description: "", icon: Shield, color: "from-blue-400 to-cyan-500" })) : transportFeatures).map((feature: any, index: number) => (
                 <motion.div 
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
@@ -87,18 +109,24 @@ export default function TransportSection() {
             <div className="bg-white rounded-xl p-6 shadow-lg">
               <h4 className="font-bold text-gray-900 mb-4">Transport Schedule</h4>
               <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Sunday Morning Pickup</span>
-                  <Badge className="bg-green-100 text-green-800">8:30 AM</Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Sunday Service Drop-off</span>
-                  <Badge className="bg-blue-100 text-blue-800">12:00 PM</Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Wednesday Evening</span>
-                  <Badge className="bg-purple-100 text-purple-800">6:00 PM</Badge>
-                </div>
+                {content.sunday_pickup && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Sunday Morning Pickup</span>
+                    <Badge className="bg-green-100 text-green-800">{content.sunday_pickup}</Badge>
+                  </div>
+                )}
+                {content.sunday_dropoff && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Sunday Service Drop-off</span>
+                    <Badge className="bg-blue-100 text-blue-800">{content.sunday_dropoff}</Badge>
+                  </div>
+                )}
+                {content.wednesday_time && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Wednesday Evening</span>
+                    <Badge className="bg-purple-100 text-purple-800">{content.wednesday_time}</Badge>
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>
@@ -111,7 +139,7 @@ export default function TransportSection() {
             className="space-y-4"
           >
             <div className="grid grid-cols-2 gap-4">
-              {transportImages.map((image, index) => (
+              {(images.length ? images : transportImages).map((image, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, scale: 0.8 }}
@@ -139,17 +167,19 @@ export default function TransportSection() {
           className="text-center"
         >
           <div className="bg-white rounded-2xl p-8 shadow-lg">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Need Transport?</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">{cta.title || "Need Transport?"}</h3>
             <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-              Contact us to arrange transportation for your child. We're here to help make church accessible for your family.
+              {cta.description || "Contact us to arrange transportation for your child. We're here to help make church accessible for your family."}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-                Request Transport
-              </button>
-              <button className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-                View Routes
-              </button>
+              <Link href={cta.primaryLink || "/contact"} className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                {cta.primaryText || "Request Transport"}
+              </Link>
+              {cta.secondaryText ? (
+                <Link href={cta.secondaryLink || "/kids#routes"} className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                  {cta.secondaryText}
+                </Link>
+              ) : null}
             </div>
           </div>
         </motion.div>

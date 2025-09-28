@@ -97,11 +97,7 @@ export default async function EventsSection() {
                   </div>
                 </CardDescription>
                 <p className="text-gray-700 mb-4 line-clamp-3">{event.description}</p>
-                <CardFooter className="p-0">
-                  <Button asChild variant="outline">
-                    <Link href={`/events/${event.id}`}>Learn More</Link>
-                  </Button>
-                </CardFooter>
+                
               </CardContent>
             </Card>
           ))}

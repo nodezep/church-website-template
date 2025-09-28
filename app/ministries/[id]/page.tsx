@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import LogoLoader from "@/components/logo-loader"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { use } from "react"
 
@@ -76,11 +77,7 @@ export default function MinistryPage({ params }: { params: Promise<{ id: string 
   }, [id])
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-xl">Loading ministry...</div>
-      </div>
-    )
+    return <LogoLoader fullScreen />
   }
 
   if (error) {

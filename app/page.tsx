@@ -8,11 +8,12 @@ import Events from "@/components/home/events"
 import SermonSection from "@/components/home/sermon-section"
 import TestimonySection from "@/components/home/testimony-section"
 import Newsletter from "@/components/home/newsletter"
+import LogoLoader from "@/components/logo-loader"
 
 export default function HomePage() {
   return (
     <div className="min-h-screen">
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<LogoLoader fullScreen /> }>
         <Hero />
         <Services />
         <ChildrensMinistry />

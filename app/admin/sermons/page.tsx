@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import LogoLoader from "@/components/logo-loader"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -166,7 +167,7 @@ export default function AdminSermonsPage() {
     }
   }
 
-  if (loading) return <div className="flex items-center justify-center h-64">Loading...</div>
+  if (loading) return <LogoLoader fullScreen />
 
   return (
     <div className="space-y-6">

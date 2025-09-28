@@ -4,6 +4,9 @@ import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Church, BookOpen, Users, Heart } from "lucide-react"
+import Link from "next/link"
+import { useEffect, useState } from "react"
+import { fetchKidsSection } from "@/lib/kidsService"
 
 const discipleshipFeatures = [
   {
@@ -39,6 +42,20 @@ const prayerImages = [
 ]
 
 export default function DiscipleshipPrayer() {
+  const [content, setContent] = useState<{ description: string; features: string[] }>({ description: "", features: [] })
+  const [cta, setCta] = useState<{ title: string; description: string; primaryText: string; primaryLink: string; secondaryText?: string; secondaryLink?: string }>({ title: "", description: "", primaryText: "", primaryLink: "" })
+  const [images, setImages] = useState<string[]>([])
+
+  useEffect(() => {
+    const load = async () => {
+      const { content, cta, gallery } = await fetchKidsSection("discipleship_prayer")
+      setContent({ description: content.description, features: content.features || [] })
+      setCta(cta)
+      setImages((gallery || []).map((g: any) => g.image_url))
+    }
+    load()
+  }, [])
+
   return (
     <section className="py-20 bg-gradient-to-br from-purple-50 to-indigo-100">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -50,7 +67,7 @@ export default function DiscipleshipPrayer() {
         >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Discipleship & Prayer</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Building deep spiritual foundations through prayer, mentorship, and meaningful relationships
+            {content.description || "Building deep spiritual foundations through prayer, mentorship, and meaningful relationships"}
           </p>
         </motion.div>
 
@@ -81,7 +98,7 @@ export default function DiscipleshipPrayer() {
             </div>
 
             <div className="space-y-4">
-              {discipleshipFeatures.map((feature, index) => (
+              {(content.features && content.features.length ? content.features.map((f) => ({ title: f, description: "", icon: Church, color: "from-purple-400 to-indigo-500" })) : discipleshipFeatures).map((feature: any, index: number) => (
                 <motion.div 
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
@@ -109,7 +126,7 @@ export default function DiscipleshipPrayer() {
             className="space-y-4"
           >
             <div className="space-y-4">
-              {prayerImages.map((image, index) => (
+              {(images.length ? images : prayerImages).map((image, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, scale: 0.8 }}
@@ -142,17 +159,19 @@ export default function DiscipleshipPrayer() {
           className="text-center"
         >
           <div className="bg-white rounded-2xl p-8 shadow-lg">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Join Our Discipleship Program</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">{cta.title || "Join Our Discipleship Program"}</h3>
             <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-              Every Wednesday at 6:00 PM, we gather for prayer, Bible study, and spiritual growth together.
+              {cta.description || "Every Wednesday at 6:00 PM, we gather for prayer, Bible study, and spiritual growth together."}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-                Join Discipleship
-              </button>
-              <button className="border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-                Prayer Requests
-              </button>
+              <Link href={cta.primaryLink || "/contact"} className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                {cta.primaryText || "Join Discipleship"}
+              </Link>
+              {cta.secondaryText ? (
+                <Link href={cta.secondaryLink || "/kids"} className="border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                  {cta.secondaryText}
+                </Link>
+              ) : null}
             </div>
           </div>
         </motion.div>

@@ -4,6 +4,9 @@ import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { MapPin, Camera, Users, Heart } from "lucide-react"
+import Link from "next/link"
+import { useEffect, useState } from "react"
+import { fetchKidsSection } from "@/lib/kidsService"
 
 const tourFeatures = [
   {
@@ -39,6 +42,20 @@ const tourImages = [
 ]
 
 export default function ToursSection() {
+  const [content, setContent] = useState<{ description: string; features: string[] }>({ description: "", features: [] })
+  const [cta, setCta] = useState<{ title: string; description: string; primaryText: string; primaryLink: string; secondaryText?: string; secondaryLink?: string }>({ title: "", description: "", primaryText: "", primaryLink: "" })
+  const [images, setImages] = useState<string[]>([])
+
+  useEffect(() => {
+    const load = async () => {
+      const { content, cta, gallery } = await fetchKidsSection("fun_tours_adventures")
+      setContent({ description: content.description, features: content.features || [] })
+      setCta(cta)
+      setImages((gallery || []).map((g: any) => g.image_url))
+    }
+    load()
+  }, [])
+
   return (
     <section className="py-20 bg-gradient-to-br from-purple-50 to-indigo-100">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -50,7 +67,7 @@ export default function ToursSection() {
         >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Fun Tours & Adventures</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Exploring God's world together through educational tours and exciting adventures
+            {content.description || "Exploring God's world together through educational tours and exciting adventures"}
           </p>
         </motion.div>
 
@@ -81,7 +98,7 @@ export default function ToursSection() {
             </div>
 
             <div className="space-y-4">
-              {tourFeatures.map((feature, index) => (
+              {(content.features && content.features.length ? content.features.map((f) => ({ title: f, description: "", icon: MapPin, color: "from-blue-400 to-cyan-500" })) : tourFeatures).map((feature: any, index: number) => (
                 <motion.div 
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
@@ -109,7 +126,7 @@ export default function ToursSection() {
             className="space-y-4"
           >
             <div className="space-y-4">
-              {tourImages.map((image, index) => (
+              {(images.length ? images : tourImages).map((image, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, scale: 0.8 }}
@@ -142,17 +159,19 @@ export default function ToursSection() {
           className="text-center"
         >
           <div className="bg-white rounded-2xl p-8 shadow-lg">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Join Our Next Adventure</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">{cta.title || "Join Our Next Adventure"}</h3>
             <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-              Stay tuned for our upcoming tours and adventures. We have exciting plans for the coming months!
+              {cta.description || "Stay tuned for our upcoming tours and adventures. We have exciting plans for the coming months!"}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-                Join Next Tour
-              </button>
-              <button className="border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-                View Gallery
-              </button>
+              <Link href={cta.primaryLink || "/contact"} className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                {cta.primaryText || "Join Next Tour"}
+              </Link>
+              {cta.secondaryText ? (
+                <Link href={cta.secondaryLink || "/kids"} className="border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                  {cta.secondaryText}
+                </Link>
+              ) : null}
             </div>
           </div>
         </motion.div>

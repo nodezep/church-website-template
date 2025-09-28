@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import LogoLoader from "@/components/logo-loader"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 interface JSCZone {
@@ -55,11 +56,7 @@ export default function JSCZonesPage() {
   }, [])
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-xl">Loading zones...</div>
-      </div>
-    )
+    return <LogoLoader fullScreen />
   }
 
   if (error) {
@@ -187,7 +184,6 @@ export default function JSCZonesPage() {
                         </div>
                       )}
                     </div>
-                    <Button className="w-full">Join This Zone</Button>
                   </CardContent>
                 </Card>
               </motion.div>

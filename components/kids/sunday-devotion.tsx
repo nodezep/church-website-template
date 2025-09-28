@@ -4,6 +4,9 @@ import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { BookOpen, Heart, Users, Star } from "lucide-react"
+import Link from "next/link"
+import { useEffect, useState } from "react"
+import { fetchKidsSection } from "@/lib/kidsService"
 
 const devotionActivities = [
   {
@@ -39,6 +42,20 @@ const devotionImages = [
 ]
 
 export default function SundayDevotion() {
+  const [content, setContent] = useState<{ description: string; features: string[] }>({ description: "", features: [] })
+  const [cta, setCta] = useState<{ title: string; description: string; primaryText: string; primaryLink: string; secondaryText?: string; secondaryLink?: string }>({ title: "", description: "", primaryText: "", primaryLink: "" })
+  const [images, setImages] = useState<string[]>([])
+
+  useEffect(() => {
+    const load = async () => {
+      const { content, cta, gallery } = await fetchKidsSection("sunday_devotion")
+      setContent({ description: content.description, features: content.features || [] })
+      setCta(cta)
+      setImages((gallery || []).map((g: any) => g.image_url))
+    }
+    load()
+  }, [])
+
   return (
     <section className="py-20 bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -50,7 +67,7 @@ export default function SundayDevotion() {
         >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Sunday Devotion</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            A special time for children to connect with God through stories, prayer, and meaningful activities
+            {content.description || "A special time for children to connect with God through stories, prayer, and meaningful activities"}
           </p>
         </motion.div>
 
@@ -81,7 +98,7 @@ export default function SundayDevotion() {
             </div>
 
             <div className="space-y-4">
-              {devotionActivities.map((activity, index) => (
+              {(content.features && content.features.length ? content.features.map((f) => ({ title: f, description: "", icon: BookOpen, color: "from-green-400 to-emerald-500" })) : devotionActivities).map((activity: any, index: number) => (
                 <motion.div 
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
@@ -109,7 +126,7 @@ export default function SundayDevotion() {
             className="space-y-4"
           >
             <div className="space-y-4">
-              {devotionImages.map((image, index) => (
+              {(images.length ? images : devotionImages).map((image, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, scale: 0.8 }}
@@ -142,17 +159,19 @@ export default function SundayDevotion() {
           className="text-center"
         >
           <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Join Our Sunday Devotion</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">{cta.title || "Join Our Sunday Devotion"}</h3>
             <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-              Every Sunday at 10:00 AM, we gather for a special time of learning and growing in faith together.
+              {cta.description || "Every Sunday at 10:00 AM, we gather for a special time of learning and growing in faith together."}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-                Join This Sunday
-              </button>
-              <button className="border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-                Learn More
-              </button>
+              <Link href={cta.primaryLink || "/contact"} className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                {cta.primaryText || "Join This Sunday"}
+              </Link>
+              {cta.secondaryText ? (
+                <Link href={cta.secondaryLink || "/kids"} className="border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                  {cta.secondaryText}
+                </Link>
+              ) : null}
             </div>
           </div>
         </motion.div>
