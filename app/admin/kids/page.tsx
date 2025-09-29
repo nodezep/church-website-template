@@ -361,6 +361,7 @@ export default function AdminKidsPage() {
       ...prev,
       { section: key, image_url: newImageUrl.trim(), caption: newImageCaption.trim(), order_index: prev.length },
     ]
+    console.log(`Adding image for ${key}:`, { prev: prev.length, updated: updated.length })
     setGalleryMap((m) => ({ ...m, [key]: updated }))
     setNewImageUrl("")
     setNewImageCaption("")
@@ -383,6 +384,11 @@ export default function AdminKidsPage() {
       const list = galleryMap[key] || []
       const normalized = list.map((item, i) => ({ ...item, section: key, order_index: i }))
       await upsertKidsGallery(normalized)
+      
+      // Reload the gallery data to get the updated IDs from the database
+      const updatedGallery = await fetchKidsGallery(key)
+      setGalleryMap((prev) => ({ ...prev, [key]: updatedGallery || [] }))
+      
       toast({ title: "Saved", description: "Gallery updated" })
     } catch (err: any) {
       toast({ title: "Error", description: err.message || "Failed to save gallery", variant: "destructive" })

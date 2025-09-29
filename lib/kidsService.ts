@@ -85,8 +85,32 @@ export async function fetchKidsGallery(section: string) {
 }
 
 export async function upsertKidsGallery(items: { id?: string; section: string; image_url: string; caption?: string; order_index?: number }[]) {
-  const { error } = await supabase.from("kids_gallery").upsert(items, { onConflict: "id" })
-  if (error) throw error
+  // First, delete existing items for this section to avoid duplicates
+  if (items.length > 0) {
+    const section = items[0].section
+    const { error: deleteError } = await supabase
+      .from("kids_gallery")
+      .delete()
+      .eq("section", section)
+    
+    if (deleteError) {
+      console.error("Error deleting existing gallery items:", deleteError)
+    }
+  }
+  
+  // Then insert all new items
+  if (items.length > 0) {
+    const { error } = await supabase
+      .from("kids_gallery")
+      .insert(items.map(item => ({
+        section: item.section,
+        image_url: item.image_url,
+        caption: item.caption || null,
+        order_index: item.order_index || 0
+      })))
+    
+    if (error) throw error
+  }
 }
 
 export async function deleteKidsGallery(id: string) {

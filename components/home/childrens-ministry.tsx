@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { fetchHomeContent } from "@/lib/supabase-helpers"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 // Define the correct type for children content
 interface ChildrenContent {
@@ -23,30 +22,15 @@ const defaultContent: ChildrenContent = {
 
 export default function ChildrensMinistry() {
   const [content, setContent] = useState<ChildrenContent>(defaultContent)
-  const [ministryId, setMinistryId] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
-      const supabase = createClientComponentClient()
-      
       try {
         // Fetch the content with correct typing
         const contentData = await fetchHomeContent("children") as ChildrenContent | null
         if (contentData) {
           setContent(contentData)
-        }
-
-        // Fetch the Children's Ministry ID from the database
-        const { data, error } = await supabase
-          .from("ministries")
-          .select("id")
-          .eq("title", "Children's Ministry")
-          .eq("active", true)
-          .single()
-
-        if (!error && data) {
-          setMinistryId(data.id)
         }
       } catch (error) {
         console.error("Error fetching data:", error)
@@ -77,19 +61,11 @@ export default function ChildrensMinistry() {
             <p className="text-lg text-gray-600 leading-relaxed mb-8">
               {content.description}
             </p>
-            {ministryId ? (
-              <Link href={`/ministries/${ministryId}`}>
-                <Button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold">
-                  Learn More
-                </Button>
-              </Link>
-            ) : (
-              <Link href="/ministries">
-                <Button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold">
-                  View Ministries
-                </Button>
-              </Link>
-            )}
+            <Link href="/kids">
+              <Button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold">
+                Learn More
+              </Button>
+            </Link>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, x: 30 }}
