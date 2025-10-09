@@ -84,6 +84,11 @@ const adminMenuItems = [
     icon: MessageSquare,
   },
   {
+    title: "Contact Page",
+    url: "/admin/contact",
+    icon: MessageSquare,
+  },
+  {
     title: "Messages",
     url: "/admin/messages",
     icon: MessageSquare,

@@ -72,6 +72,11 @@ const menuItems = [
     url: "/admin/settings",
     icon: Settings,
   },
+  {
+    title: "Contact Page",
+    url: "/admin/contact",
+    icon: MessageSquare,
+  },
  
 ]
 

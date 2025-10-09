@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Star, Quote } from "lucide-react"
-import { fetchTestimonials } from "@/lib/homeService"
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 type T = { id?: string; name: string; role?: string; content: string; rating?: number; image_url?: string }
 
@@ -13,8 +13,22 @@ export default function TestimonySection() {
 
   useEffect(() => {
     const load = async () => {
-      const data = await fetchTestimonials()
-      setItems(data)
+      try {
+        const supabase = createClientComponentClient()
+        const { data, error } = await supabase
+          .from("testimonials")
+          .select("id,name,role,content,rating,image_url")
+          .order("created_at", { ascending: false })
+        if (error) {
+          console.warn("Failed to load testimonials", error)
+          setItems([])
+          return
+        }
+        setItems(data || [])
+      } catch (e) {
+        console.warn("Testimonials load exception", e)
+        setItems([])
+      }
     }
     load()
   }, [])
@@ -34,12 +48,7 @@ export default function TestimonySection() {
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {(items.length ? items : [
-            { name: "Sarah Johnson", role: "Church Member", content: "JSC Church has been a blessing to my family.", rating: 5, image_url: "/placeholder-user.jpg" },
-            { name: "Michael Chen", role: "Youth Leader", content: "The children's ministry here is amazing!", rating: 5, image_url: "/placeholder-user.jpg" },
-            { name: "Grace Williams", role: "Volunteer", content: "Serving at JSC Church has been life-changing.", rating: 5, image_url: "/placeholder-user.jpg" },
-            { name: "David Rodriguez", role: "New Member", content: "From the moment I walked in, I felt welcomed.", rating: 5, image_url: "/placeholder-user.jpg" },
-          ]).map((testimony, index) => (
+          {items.map((testimony, index) => (
             <motion.div
               key={(testimony as any).id ?? index}
               initial={{ opacity: 0, y: 30 }}
@@ -78,28 +87,7 @@ export default function TestimonySection() {
           ))}
         </div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }} 
-          whileInView={{ opacity: 1, y: 0 }} 
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="text-center mt-12"
-        >
-          <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-2xl p-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Join Our Church Family</h3>
-            <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-              Experience the love, community, and spiritual growth that our members are talking about. 
-              Come and be part of something greater.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-yellow-600 hover:bg-yellow-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-                Visit This Sunday
-              </button>
-              <button className="border-2 border-yellow-600 text-yellow-600 hover:bg-yellow-600 hover:text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-                Learn More
-              </button>
-            </div>
-          </div>
-        </motion.div>
+
       </div>
     </section>
   )

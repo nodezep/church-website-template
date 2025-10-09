@@ -2,6 +2,9 @@ import { MapPin, Phone, Mail, Clock } from "lucide-react"
 import ContactForm from "@/components/contact-form"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { fetchContactPage } from "@/lib/homeService"
+export const dynamic = "force-dynamic"
+export const revalidate = 0
 
 export const metadata = {
   title: "Contact Us - Jerusalem Spiritual Centre",
@@ -9,15 +12,26 @@ export const metadata = {
     "Get in touch with Jerusalem Spiritual Centre. Find our location, contact details, service times, and frequently asked questions.",
 }
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const dynamic = await fetchContactPage()
+  const heroTitle = dynamic?.hero_title || "Contact Us"
+  const heroDescription = dynamic?.hero_description || "We'd love to hear from you! Whether you have a question, a prayer request, or just want to say hello, feel free to reach out."
+  const address1 = dynamic?.address_line1 || "123 Divine Grace Avenue"
+  const address2 = dynamic?.address_line2 || "Faith City, FC 12345"
+  const country = dynamic?.country || "United Kingdom"
+  const mapLink = dynamic?.map_link || "https://www.google.com/maps/search/?api=1&query=Jerusalem+Spiritual+Centre"
+  const phoneGeneral = dynamic?.phone_general || "+44 20 1234 5678"
+  const phonePrayer = dynamic?.phone_prayer || "+44 20 9876 5432"
+  const emailGeneral = dynamic?.email_general || "info@jsc.org"
+  const emailPrayer = dynamic?.email_prayer || "prayer@jsc.org"
+  const sunday = dynamic?.sunday_service || "Sunday Worship: 10:00 AM - 12:00 PM"
+  const wednesday = dynamic?.wednesday_study || "Wednesday Bible Study: 7:00 PM - 8:30 PM"
+  const friday = dynamic?.friday_prayer || "Friday Prayer Meeting: 7:00 PM - 8:00 PM"
   return (
     <main className="container mx-auto px-4 py-12 md:py-16 lg:py-20">
       <section className="text-center mb-12 md:mb-16">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">Contact Us</h1>
-        <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-          We'd love to hear from you! Whether you have a question, a prayer request, or just want to say hello, feel
-          free to reach out.
-        </p>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">{heroTitle}</h1>
+        <p className="text-lg text-gray-600 max-w-3xl mx-auto">{heroDescription}</p>
       </section>
 
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
@@ -30,11 +44,11 @@ export default function ContactPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="text-lg text-gray-700">
-              <p className="mb-2">123 Divine Grace Avenue,</p>
-              <p className="mb-2">Faith City, FC 12345</p>
-              <p>United Kingdom</p>
+              <p className="mb-2">{address1},</p>
+              <p className="mb-2">{address2}</p>
+              <p>{country}</p>
               <a
-                href="https://www.google.com/maps/search/?api=1&query=Jerusalem+Spiritual+Centre"
+                href={mapLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline mt-4 inline-block"
@@ -53,15 +67,11 @@ export default function ContactPage() {
             <CardContent className="text-lg text-gray-700">
               <p className="mb-2">
                 General Inquiries:{" "}
-                <a href="tel:+442012345678" className="text-blue-600 hover:underline">
-                  +44 20 1234 5678
-                </a>
+                <a href={`tel:${phoneGeneral.replace(/\s/g,'')}`} className="text-blue-600 hover:underline">{phoneGeneral}</a>
               </p>
               <p>
                 Prayer Line:{" "}
-                <a href="tel:+442098765432" className="text-blue-600 hover:underline">
-                  +44 20 9876 5432
-                </a>
+                <a href={`tel:${phonePrayer.replace(/\s/g,'')}`} className="text-blue-600 hover:underline">{phonePrayer}</a>
               </p>
             </CardContent>
           </Card>
@@ -75,15 +85,11 @@ export default function ContactPage() {
             <CardContent className="text-lg text-gray-700">
               <p className="mb-2">
                 General:{" "}
-                <a href="mailto:info@jsc.org" className="text-blue-600 hover:underline">
-                  info@jsc.org
-                </a>
+                <a href={`mailto:${emailGeneral}`} className="text-blue-600 hover:underline">{emailGeneral}</a>
               </p>
               <p>
                 Prayer Requests:{" "}
-                <a href="mailto:prayer@jsc.org" className="text-blue-600 hover:underline">
-                  prayer@jsc.org
-                </a>
+                <a href={`mailto:${emailPrayer}`} className="text-blue-600 hover:underline">{emailPrayer}</a>
               </p>
             </CardContent>
           </Card>
@@ -95,9 +101,9 @@ export default function ContactPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="text-lg text-gray-700">
-              <p className="mb-2">Sunday Worship: 10:00 AM - 12:00 PM</p>
-              <p className="mb-2">Wednesday Bible Study: 7:00 PM - 8:30 PM</p>
-              <p>Friday Prayer Meeting: 7:00 PM - 8:00 PM</p>
+              <p className="mb-2">{sunday}</p>
+              <p className="mb-2">{wednesday}</p>
+              <p>{friday}</p>
             </CardContent>
           </Card>
         </div>

@@ -7,7 +7,7 @@ import PastorSection from "@/components/home/pastor-section"
 import Events from "@/components/home/events"
 import SermonSection from "@/components/home/sermon-section"
 import TestimonySection from "@/components/home/testimony-section"
-import Newsletter from "@/components/home/newsletter"
+// Newsletter removed per request
 import LogoLoader from "@/components/logo-loader"
 
 export default function HomePage() {
@@ -22,7 +22,7 @@ export default function HomePage() {
         <Events />
         <SermonSection />
         <TestimonySection />
-        <Newsletter />
+        {/* Newsletter removed */}
       </Suspense>
     </div>
   )

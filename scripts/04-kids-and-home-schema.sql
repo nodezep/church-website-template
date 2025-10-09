@@ -23,8 +23,40 @@ create table if not exists public.testimonials (
   content text not null,
   rating int not null default 5 check (rating between 1 and 5),
   image_url text,
+  email text,
   created_at timestamp with time zone default now()
 );
+
+-- Contact page editable content
+create table if not exists public.contact_page (
+  id uuid primary key default gen_random_uuid(),
+  hero_title text default 'Contact Us',
+  hero_description text default 'We''d love to hear from you! Reach out any time.',
+  address_line1 text default '123 Divine Grace Avenue',
+  address_line2 text default 'Faith City, FC 12345',
+  country text default 'United Kingdom',
+  map_link text default 'https://www.google.com/maps/search/?api=1&query=Jerusalem+Spiritual+Centre',
+  phone_general text default '+44 20 1234 5678',
+  phone_prayer text default '+44 20 9876 5432',
+  email_general text default 'info@jsc.org',
+  email_prayer text default 'prayer@jsc.org',
+  sunday_service text default 'Sunday Worship: 10:00 AM - 12:00 PM',
+  wednesday_study text default 'Wednesday Bible Study: 7:00 PM - 8:30 PM',
+  friday_prayer text default 'Friday Prayer Meeting: 7:00 PM - 8:00 PM',
+  faqs jsonb default '[]'::jsonb,
+  updated_at timestamp with time zone default now()
+);
+
+alter table public.contact_page enable row level security;
+
+create policy if not exists "public read contact_page" on public.contact_page
+for select using (true);
+
+create policy if not exists "admin write contact_page" on public.contact_page
+for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+
+-- Zones: ensure members column exists for displaying counts
+alter table if exists public.jsc_zones add column if not exists members int default 0;
 
 -- Kids classes
 create table if not exists public.kids_classes (

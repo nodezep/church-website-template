@@ -34,6 +34,7 @@ interface JSCZone {
   leader: string
   focus: string
   image_url?: string
+  members?: number
   active: boolean
   created_at: string
 }
@@ -54,6 +55,7 @@ export default function AdminZonesPage() {
     leader: "",
     focus: "",
     image_url: "",
+    members: 0,
     active: true,
   })
 
@@ -65,13 +67,17 @@ export default function AdminZonesPage() {
     try {
       const { data, error } = await supabase.from("jsc_zones").select("*").order("name", { ascending: true })
 
-      if (error) throw error
+      if (error) {
+        console.error("Supabase fetch error:", error)
+        throw new Error(error.message || "Failed to fetch zones")
+      }
+      
       setZones(data || [])
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching zones:", error)
       toast({
         title: "Error",
-        description: "Failed to fetch JSC zones",
+        description: error.message || "Failed to fetch JSC zones",
         variant: "destructive",
       })
     } finally {
@@ -79,39 +85,79 @@ export default function AdminZonesPage() {
     }
   }
 
+  const validateForm = () => {
+    const requiredFields = ['name', 'description', 'day', 'time', 'location', 'leader', 'focus'];
+    for (const field of requiredFields) {
+      if (!formData[field as keyof typeof formData]) {
+        toast({
+          title: "Validation Error",
+          description: `${field.charAt(0).toUpperCase() + field.slice(1)} is required`,
+          variant: "destructive",
+        });
+        return false;
+      }
+    }
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    if (!validateForm()) {
+      return;
+    }
+
     try {
-      if (editingZone) {
-        const { error } = await supabase.from("jsc_zones").update(formData).eq("id", editingZone.id)
-
-        if (error) throw error
-
-        toast({
-          title: "Success",
-          description: "JSC Zone updated successfully",
-        })
-      } else {
-        const { error } = await supabase.from("jsc_zones").insert([formData])
-
-        if (error) throw error
-
-        toast({
-          title: "Success",
-          description: "JSC Zone created successfully",
-        })
+      // Create a clean data object without undefined values
+      const submitData = {
+        name: formData.name,
+        description: formData.description,
+        day: formData.day,
+        time: formData.time,
+        location: formData.location,
+        leader: formData.leader,
+        focus: formData.focus,
+        image_url: formData.image_url || null,
+        members: formData.members || 0,
+        active: formData.active,
       }
+
+      let result
+      if (editingZone) {
+        result = await supabase
+          .from("jsc_zones")
+          .update(submitData)
+          .eq("id", editingZone.id)
+      } else {
+        result = await supabase
+          .from("jsc_zones")
+          .insert([submitData])
+      }
+
+      if (result.error) {
+        console.error("Supabase error details:", {
+          message: result.error.message,
+          details: result.error.details,
+          hint: result.error.hint,
+          code: result.error.code
+        })
+        throw new Error(result.error.message || `Failed to ${editingZone ? 'update' : 'create'} zone`)
+      }
+
+      toast({
+        title: "Success",
+        description: `JSC Zone ${editingZone ? 'updated' : 'created'} successfully`,
+      })
 
       setIsDialogOpen(false)
       setEditingZone(null)
       resetForm()
       fetchZones()
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving zone:", error)
       toast({
         title: "Error",
-        description: "Failed to save JSC zone",
+        description: error.message || "Failed to save JSC zone",
         variant: "destructive",
       })
     }
@@ -128,6 +174,7 @@ export default function AdminZonesPage() {
       leader: zone.leader,
       focus: zone.focus,
       image_url: zone.image_url || "",
+      members: zone.members ?? 0,
       active: zone.active,
     })
     setIsDialogOpen(true)
@@ -137,9 +184,15 @@ export default function AdminZonesPage() {
     if (!confirm("Are you sure you want to delete this JSC zone?")) return
 
     try {
-      const { error } = await supabase.from("jsc_zones").delete().eq("id", id)
+      const { error } = await supabase
+        .from("jsc_zones")
+        .delete()
+        .eq("id", id)
 
-      if (error) throw error
+      if (error) {
+        console.error("Supabase delete error:", error)
+        throw new Error(error.message || "Failed to delete zone")
+      }
 
       toast({
         title: "Success",
@@ -147,11 +200,11 @@ export default function AdminZonesPage() {
       })
 
       fetchZones()
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error deleting zone:", error)
       toast({
         title: "Error",
-        description: "Failed to delete JSC zone",
+        description: error.message || "Failed to delete JSC zone",
         variant: "destructive",
       })
     }
@@ -167,6 +220,7 @@ export default function AdminZonesPage() {
       leader: "",
       focus: "",
       image_url: "",
+      members: 0,
       active: true,
     })
   }
@@ -295,6 +349,16 @@ export default function AdminZonesPage() {
                   placeholder="https://..."
                 />
               </div>
+              <div>
+                <Label htmlFor="members">Members</Label>
+                <Input
+                  id="members"
+                  type="number"
+                  min={0}
+                  value={formData.members}
+                  onChange={(e) => setFormData({ ...formData, members: Number(e.target.value) || 0 })}
+                />
+              </div>
 
               <div className="flex items-center space-x-2">
                 <input
@@ -331,6 +395,7 @@ export default function AdminZonesPage() {
                 <TableHead>Schedule</TableHead>
                 <TableHead>Location</TableHead>
                 <TableHead>Focus</TableHead>
+                <TableHead>Members</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
@@ -345,6 +410,7 @@ export default function AdminZonesPage() {
                   </TableCell>
                   <TableCell>{zone.location}</TableCell>
                   <TableCell>{zone.focus}</TableCell>
+                  <TableCell>{zone.members || 0}</TableCell>
                   <TableCell>
                     <Badge variant={zone.active ? "default" : "secondary"}>{zone.active ? "Active" : "Inactive"}</Badge>
                   </TableCell>
