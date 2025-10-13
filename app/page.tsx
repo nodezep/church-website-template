@@ -9,6 +9,7 @@ import SermonSection from "@/components/home/sermon-section"
 import TestimonySection from "@/components/home/testimony-section"
 // Newsletter removed per request
 import LogoLoader from "@/components/logo-loader"
+import ConstructionSlider from "@/components/home/construction-slider"
 
 export default function HomePage() {
   return (
@@ -17,6 +18,7 @@ export default function HomePage() {
         <Hero />
         <Services />
         <ChildrensMinistry />
+        <ConstructionSlider />
         <Mission />
         <PastorSection />
         <Events />

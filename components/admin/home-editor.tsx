@@ -35,6 +35,14 @@ type ServicesContent = {
   }[]
 }
 
+type ConstructionContent = {
+  slides: {
+    imageUrl: string
+    title: string
+    description: string
+  }[]
+}
+
 export default function HomeEditor() {
   const [activeTab, setActiveTab] = useState("hero")
   const [loading, setLoading] = useState(true)
@@ -50,6 +58,7 @@ export default function HomeEditor() {
     imageUrl: ""
   })
   const [servicesContent, setServicesContent] = useState<ServicesContent>({ services: [] })
+  const [constructionContent, setConstructionContent] = useState<ConstructionContent>({ slides: [] })
 
   // Fetch all content from database
   useEffect(() => {
@@ -113,6 +122,27 @@ export default function HomeEditor() {
           })
         }
 
+        // Fetch construction content
+        const { data: constructionData } = await supabase
+          .from('home_content')
+          .select('content')
+          .eq('component_type', 'construction')
+          .single()
+
+        if (constructionData?.content?.slides) {
+          setConstructionContent(constructionData.content as ConstructionContent)
+        } else {
+          setConstructionContent({
+            slides: [
+              {
+                imageUrl: "",
+                title: "",
+                description: ""
+              }
+            ]
+          })
+        }
+
       } catch (error) {
         console.error('Error fetching content:', error)
         toast({
@@ -147,6 +177,10 @@ export default function HomeEditor() {
         case 'services':
           content = servicesContent
           successMessage = "Services updated successfully"
+          break
+        case 'construction':
+          content = constructionContent
+          successMessage = "Construction slides updated successfully"
           break
         default:
           throw new Error('Invalid component type')
@@ -270,6 +304,36 @@ export default function HomeEditor() {
     })
   }
 
+  // Construction slides management
+  const addConstructionSlide = () => {
+    setConstructionContent(prev => ({
+      ...prev,
+      slides: [
+        ...prev.slides,
+        {
+          imageUrl: "",
+          title: "",
+          description: ""
+        }
+      ]
+    }))
+  }
+
+  const removeConstructionSlide = (index: number) => {
+    setConstructionContent(prev => ({
+      ...prev,
+      slides: prev.slides.filter((_, i) => i !== index)
+    }))
+  }
+
+  const updateConstructionSlide = (index: number, field: keyof ConstructionContent['slides'][0], value: string) => {
+    setConstructionContent(prev => {
+      const newSlides = [...prev.slides]
+      newSlides[index] = { ...newSlides[index], [field]: value }
+      return { ...prev, slides: newSlides }
+    })
+  }
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -281,10 +345,11 @@ export default function HomeEditor() {
   return (
     <div className="p-6">
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid grid-cols-3 w-full">
+        <TabsList className="grid grid-cols-4 w-full">
           <TabsTrigger value="hero">Hero Section</TabsTrigger>
           <TabsTrigger value="children">Children's Ministry</TabsTrigger>
           <TabsTrigger value="services">Service Times</TabsTrigger>
+          <TabsTrigger value="construction">Construction Slides</TabsTrigger>
         </TabsList>
 
         {/* Hero Editor */}
@@ -484,6 +549,67 @@ export default function HomeEditor() {
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : null}
             Save Service Times
+          </Button>
+        </TabsContent>
+
+        {/* Construction Editor */}
+        <TabsContent value="construction" className="pt-6 space-y-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold">Construction Slides</h2>
+            <Button onClick={addConstructionSlide}>Add Slide</Button>
+          </div>
+
+          {constructionContent.slides.map((slide, index) => (
+            <div key={index} className="border p-4 rounded-lg space-y-4 relative bg-gray-50">
+              <Button
+                variant="destructive"
+                size="sm"
+                className="absolute top-2 right-2"
+                onClick={() => removeConstructionSlide(index)}
+              >
+                Remove
+              </Button>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Image URL</Label>
+                  <Input
+                    value={slide.imageUrl}
+                    onChange={(e) => updateConstructionSlide(index, 'imageUrl', e.target.value)}
+                    placeholder="https://example.com/construction.jpg"
+                  />
+                </div>
+                <div>
+                  <Label>Title</Label>
+                  <Input
+                    value={slide.title}
+                    onChange={(e) => updateConstructionSlide(index, 'title', e.target.value)}
+                    placeholder="Foundation Work"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label>Description</Label>
+                <Textarea
+                  value={slide.description}
+                  onChange={(e) => updateConstructionSlide(index, 'description', e.target.value)}
+                  placeholder="Short note about the progress"
+                  className="min-h-[100px]"
+                />
+              </div>
+            </div>
+          ))}
+
+          <Button
+            onClick={() => handleSave('construction')}
+            disabled={saving}
+            className="w-full md:w-auto"
+          >
+            {saving && activeTab === 'construction' ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : null}
+            Save Construction Slides
           </Button>
         </TabsContent>
       </Tabs>
