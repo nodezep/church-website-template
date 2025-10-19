@@ -8,6 +8,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  type CarouselApi,
 } from "@/components/ui/carousel"
 
 type Slide = {
@@ -40,6 +41,7 @@ const defaultSlides: Slide[] = [
 
 export default function ConstructionSlider() {
   const [slides, setSlides] = useState<Slide[]>(defaultSlides)
+  const [api, setApi] = useState<CarouselApi | null>(null)
 
   useEffect(() => {
     const loadSlides = async () => {
@@ -63,6 +65,45 @@ export default function ConstructionSlider() {
     loadSlides()
   }, [])
 
+  // Autoplay: advance every 3 seconds
+  useEffect(() => {
+    if (!api) return
+
+    const interval = setInterval(() => {
+      // api.scrollNext may return a promise or throw; wrap to avoid unhandled rejections
+      try {
+        // Use Promise.resolve to handle both sync and async returns
+        Promise.resolve(api?.scrollNext()).catch((err) => {
+          // swallow non-critical errors (for example during teardown) but log for debugging
+          console.warn("Autoplay scrollNext error:", err)
+        })
+      } catch (e) {
+        // ignore synchronous errors (e.g., during teardown)
+      }
+    }, 3000)
+
+    return () => clearInterval(interval)
+  }, [api])
+
+  // Dev-only: capture unhandled promise rejections and log details to help debugging
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") return
+
+    function onUnhandledRejection(e: PromiseRejectionEvent) {
+      try {
+        console.error("Unhandled promise rejection (captured in ConstructionSlider):", {
+          reason: (e && (e.reason ?? e)) || e,
+          event: e,
+        })
+      } catch (err) {
+        console.error("Error logging unhandled rejection:", err)
+      }
+    }
+
+    window.addEventListener("unhandledrejection", onUnhandledRejection as EventListener)
+    return () => window.removeEventListener("unhandledrejection", onUnhandledRejection as EventListener)
+  }, [])
+
   return (
     <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -79,6 +120,7 @@ export default function ConstructionSlider() {
           <Carousel
             className="w-full"
             opts={{ align: "start", loop: true }}
+            setApi={setApi}
           >
             <CarouselContent>
               {slides.map((slide, index) => (
@@ -89,11 +131,24 @@ export default function ConstructionSlider() {
                   <div className="p-2 h-full">
                     <div className="bg-white rounded-xl shadow overflow-hidden h-full flex flex-col">
                       <div className="relative aspect-[16/10] w-full overflow-hidden">
-                        <img
-                          src={slide.imageUrl}
-                          alt={slide.title || "Construction slide"}
-                          className="h-full w-full object-cover"
-                        />
+                        {(() => {
+                          const imageSrc = slide.imageUrl && String(slide.imageUrl).trim() ? slide.imageUrl : null
+                          if (imageSrc) {
+                            return (
+                              <img
+                                src={imageSrc}
+                                alt={slide.title || "Construction slide"}
+                                className="h-full w-full object-cover"
+                              />
+                            )
+                          }
+
+                          return (
+                            <div className="h-full w-full bg-gray-100 flex items-center justify-center">
+                              <span className="text-sm text-gray-500">No image available</span>
+                            </div>
+                          )
+                        })()}
                       </div>
                       {(slide.title || slide.description) && (
                         <div className="p-4">
