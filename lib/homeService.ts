@@ -1,4 +1,5 @@
 import { supabase } from "./supabase"
+import { logError } from "./error-utils"
 
 export type PastorProfile = {
   id?: string
@@ -19,7 +20,7 @@ export async function fetchPastorProfile(): Promise<PastorProfile | null> {
     .single()
   if (error) {
     if (error.code === "PGRST116") return null
-    console.error("fetchPastorProfile error:", error)
+    logError("fetchPastorProfile error:", error)
     return null
   }
   return data

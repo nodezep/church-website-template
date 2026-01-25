@@ -4,6 +4,7 @@ import { PlayCircle } from "lucide-react"
 import Link from "next/link"
 import { supabase } from "@/lib/supabase"
 import { format } from "date-fns"
+import { logError } from "@/lib/error-utils"
 
 interface Sermon {
   id: string
@@ -35,7 +36,7 @@ export default async function SermonSection() {
     latestSermon = data
   } catch (e) {
     error = e
-    console.error("Failed to fetch latest sermon:", e)
+    logError("Failed to fetch latest sermon:", e)
   }
 
   if (error || !latestSermon) {

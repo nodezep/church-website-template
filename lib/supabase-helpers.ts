@@ -1,5 +1,6 @@
 // lib/supabase-helpers.ts
 import { createBrowserClient } from "@supabase/ssr"
+import { logError, formatError } from "./error-utils"
 
 export async function fetchHomeContent(componentType: string) {
   const supabase = createBrowserClient(
@@ -15,13 +16,13 @@ export async function fetchHomeContent(componentType: string) {
       .single()
 
     if (error) {
-      console.error(`Error fetching ${componentType} content:`, error)
+      logError(`Error fetching ${componentType} content:`, error)
       return null
     }
 
     return data?.content || null
   } catch (error) {
-    console.error(`Error in fetchHomeContent for ${componentType}:`, error)
+    logError(`Error in fetchHomeContent for ${componentType}:`, error)
     return null
   }
 }

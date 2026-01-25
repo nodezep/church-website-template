@@ -4,6 +4,7 @@ import { CalendarDays, MapPin } from "lucide-react"
 import Link from "next/link"
 import { supabase } from "@/lib/supabase"
 import { format } from "date-fns"
+import { logError } from "@/lib/error-utils"
 
 interface Event {
   id: string
@@ -32,7 +33,7 @@ export default async function EventsSection() {
     events = data || []
   } catch (e) {
     error = e
-    console.error("Failed to fetch events:", e)
+    logError("Failed to fetch events:", e)
     // Fallback to mock data if Supabase fails
     events = [
       {
