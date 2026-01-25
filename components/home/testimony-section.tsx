@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Star, Quote } from "lucide-react"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import { createBrowserClient } from "@supabase/ssr"
 
 type T = { id?: string; name: string; role?: string; content: string; rating?: number; image_url?: string }
 
@@ -14,7 +14,10 @@ export default function TestimonySection() {
   useEffect(() => {
     const load = async () => {
       try {
-        const supabase = createClientComponentClient()
+        const supabase = createBrowserClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        )
         const { data, error } = await supabase
           .from("testimonials")
           .select("id,name,role,content,rating,image_url")

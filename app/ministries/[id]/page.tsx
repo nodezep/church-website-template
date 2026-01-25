@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import LogoLoader from "@/components/logo-loader"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import { createBrowserClient } from "@supabase/ssr"
 import { use } from "react"
 
 interface Ministry {
@@ -50,7 +50,10 @@ export default function MinistryPage({ params }: { params: Promise<{ id: string 
 
   useEffect(() => {
     const fetchMinistry = async () => {
-      const supabase = createClientComponentClient()
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      )
       
       try {
         const { data, error: supabaseError } = await supabase

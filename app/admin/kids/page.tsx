@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import { Loader2, Plus, Trash2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { fetchKidsGallery, upsertKidsGallery, deleteKidsGallery } from "@/lib/kidsService"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import { createBrowserClient } from "@supabase/ssr"
 
 type KidsCTAContent = {
   title: string
@@ -24,7 +24,10 @@ type KidsCTAContent = {
 
 export default function AdminKidsPage() {
   const { toast } = useToast()
-  const supabase = createClientComponentClient()
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
 
   const [activeTab, setActiveTab] = useState("transport")
   const [loading, setLoading] = useState(true)

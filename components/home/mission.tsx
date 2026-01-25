@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import LogoLoader from "@/components/logo-loader"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import { createBrowserClient } from "@supabase/ssr"
 
 interface AboutPageData {
   mission_statement: string
@@ -16,7 +16,10 @@ export default function Mission() {
 
   useEffect(() => {
     const fetchMissionAndVision = async () => {
-      const supabase = createClientComponentClient()
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      )
       try {
         const { data } = await supabase
           .from("about_page")

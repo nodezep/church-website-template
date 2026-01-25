@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import { Heart, Users, BookOpen, Globe } from "lucide-react"
 import { useEffect, useState } from "react"
 import LogoLoader from "@/components/logo-loader"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import { createBrowserClient } from "@supabase/ssr"
 
 interface AboutPageData {
   hero_title: string
@@ -46,7 +46,10 @@ export default function AboutPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const supabase = createClientComponentClient()
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      )
       
       try {
         // Fetch about page content
