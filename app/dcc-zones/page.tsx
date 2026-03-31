@@ -10,7 +10,7 @@ import { useEffect, useState } from "react"
 import LogoLoader from "@/components/logo-loader"
 import { createBrowserClient } from "@supabase/ssr"
 
-interface JSCZone {
+interface DCCZone {
   id: string
   name: string
   description: string
@@ -24,8 +24,8 @@ interface JSCZone {
   color: string
 }
 
-export default function JSCZonesPage() {
-  const [zones, setZones] = useState<JSCZone[]>([])
+export default function DCCZonesPage() {
+  const [zones, setZones] = useState<DCCZone[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -46,7 +46,7 @@ export default function JSCZonesPage() {
         if (supabaseError) throw supabaseError
         if (!data) throw new Error("No zones found")
 
-        setZones(data as JSCZone[])
+        setZones(data as DCCZone[])
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to fetch zones")
         console.error("Fetch error:", err)
@@ -89,7 +89,7 @@ export default function JSCZonesPage() {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">JSC Zones</h1>
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">DCC Zones</h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Life Groups designed to help you grow in faith, build meaningful relationships, and discover your purpose
               in community
@@ -98,13 +98,13 @@ export default function JSCZonesPage() {
         </div>
       </section>
 
-      {/* What are JSC Zones */}
+      {/* What are DCC Zones */}
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">What are JSC Zones?</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-6">What are DCC Zones?</h2>
             <p className="text-lg text-gray-600 leading-relaxed mb-8">
-              JSC Zones are small, intimate groups where members of our church family come together to study God's Word,
+              DCC Zones are small, intimate groups where members of our church family come together to study God's Word,
               pray for one another, and build lasting friendships. These groups meet regularly throughout the week in
               various locations, providing opportunities for deeper connection and spiritual growth.
             </p>
@@ -135,7 +135,7 @@ export default function JSCZonesPage() {
         </div>
       </section>
 
-      {/* JSC Zones Grid */}
+      {/* DCC Zones Grid */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">

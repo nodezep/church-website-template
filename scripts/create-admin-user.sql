@@ -81,4 +81,4 @@ CREATE POLICY "Admin users can manage prayer_requests" ON prayer_requests
   FOR ALL USING (is_admin());
 
 -- After running this script, you'll need to manually update a user's role to 'admin'
--- UPDATE profiles SET role = 'admin' WHERE email = 'admin@jsc.com';
+-- UPDATE profiles SET role = 'admin' WHERE email = 'admin@dcc.org';

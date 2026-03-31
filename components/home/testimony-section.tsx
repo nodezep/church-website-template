@@ -46,7 +46,7 @@ export default function TestimonySection() {
         >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">What Our Members Say</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Hear from our church family about how JSC Church has impacted their lives
+            Hear from our church family about how DCC Church has impacted their lives
           </p>
         </motion.div>
 

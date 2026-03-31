@@ -319,7 +319,7 @@ export default function EventsPage() {
             <h2 className="text-4xl font-bold text-gray-900 mb-6">Don't Miss Out!</h2>
             <p className="text-xl text-gray-600 mb-8">
               Stay connected with our church family by joining our upcoming events. There's always something happening
-              at JSC!
+              at DCC!
             </p>
             <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
               <Link href="/contact">Get Event Updates</Link>

@@ -67,7 +67,7 @@ export default function AdminLoginPage() {
                 <Church className="w-8 h-8 text-blue-600" />
               </div>
             </div>
-            <CardTitle className="text-2xl font-bold">JSC Admin Panel</CardTitle>
+            <CardTitle className="text-2xl font-bold">DCC Admin Panel</CardTitle>
             <CardDescription>Sign in to manage your church website</CardDescription>
           </CardHeader>
           <CardContent>
@@ -79,7 +79,7 @@ export default function AdminLoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@jsc.com"
+                  placeholder="admin@dcc.org"
                   required
                 />
               </div>

@@ -1,7 +1,6 @@
 "use client"
 
 import Image from "next/image"
-import logo from "@/components/assets/jsc.png"
 import React from "react"
 
 export default function LogoLoader({ fullScreen = true }: { fullScreen?: boolean }) {
@@ -21,11 +20,12 @@ export default function LogoLoader({ fullScreen = true }: { fullScreen?: boolean
         <div className="absolute inset-6 rounded-2xl bg-white/80 backdrop-blur shadow-2xl flex items-center justify-center">
           <div className="relative w-[160px] h-[160px]">
             <Image
-              src={logo}
-              alt="JSC Church Logo"
+              src="/logo.png"
+              alt="DCC Church Logo"
               fill
               sizes="160px"
               className="animate-pulse"
+              unoptimized
               priority
             />
           </div>
@@ -34,5 +34,6 @@ export default function LogoLoader({ fullScreen = true }: { fullScreen?: boolean
     </div>
   )
 }
+
 
 

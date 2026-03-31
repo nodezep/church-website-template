@@ -36,11 +36,11 @@ export default function Footer() {
         const settings = await getSettings()
         if (settings) {
           setFooterData({
-            name: settings.name || "Jerusalem Spiritual Centre",
+            name: settings.name || "Doxor Christian Center",
             tagline: settings.tagline || "Faith, Hope, Love",
             address: settings.address || "123 Faith Street, Hope City, HC 12345",
             phone: settings.phone || "+1 (555) 123-4567",
-            email: settings.email || "info@jsc.com",
+            email: settings.email || "info@dcc.org",
             service_schedule: settings.service_schedule || {
               sunday_morning: "9:00 AM & 10:30 AM",
               wednesday_prayer: "7:00 PM",

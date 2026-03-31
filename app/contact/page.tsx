@@ -7,9 +7,9 @@ export const dynamic = "force-dynamic"
 export const revalidate = 0
 
 export const metadata = {
-  title: "Contact Us - Jerusalem Spiritual Centre",
+  title: "Contact Us - Doxor Christian Center",
   description:
-    "Get in touch with Jerusalem Spiritual Centre. Find our location, contact details, service times, and frequently asked questions.",
+    "Get in touch with Doxor Christian Center. Find our location, contact details, service times, and frequently asked questions.",
 }
 
 export default async function ContactPage() {
@@ -19,11 +19,11 @@ export default async function ContactPage() {
   const address1 = dynamic?.address_line1 || "123 Divine Grace Avenue"
   const address2 = dynamic?.address_line2 || "Faith City, FC 12345"
   const country = dynamic?.country || "United Kingdom"
-  const mapLink = dynamic?.map_link || "https://www.google.com/maps/search/?api=1&query=Jerusalem+Spiritual+Centre"
+  const mapLink = dynamic?.map_link || "https://www.google.com/maps/search/?api=1&query=Doxor\+Christian\+Center"
   const phoneGeneral = dynamic?.phone_general || "+44 20 1234 5678"
   const phonePrayer = dynamic?.phone_prayer || "+44 20 9876 5432"
-  const emailGeneral = dynamic?.email_general || "info@jsc.org"
-  const emailPrayer = dynamic?.email_prayer || "prayer@jsc.org"
+  const emailGeneral = dynamic?.email_general || "info@dcc.org"
+  const emailPrayer = dynamic?.email_prayer || "prayer@dcc.org"
   const sunday = dynamic?.sunday_service || "Sunday Worship: 10:00 AM - 12:00 PM"
   const wednesday = dynamic?.wednesday_study || "Wednesday Bible Study: 7:00 PM - 8:30 PM"
   const friday = dynamic?.friday_prayer || "Friday Prayer Meeting: 7:00 PM - 8:00 PM"

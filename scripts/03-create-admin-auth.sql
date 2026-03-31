@@ -22,7 +22,7 @@ CREATE TRIGGER update_church_settings_updated_at BEFORE UPDATE ON church_setting
 -- 1. Go to your Supabase dashboard
 -- 2. Navigate to Authentication > Users
 -- 3. Click "Add user"
--- 4. Enter email: admin@jsc.org
+-- 4. Enter email: admin@dcc.org
 -- 5. Enter password: admin123
 -- 6. Click "Add user"
 -- 7. The user will be able to log in to the admin panel

@@ -23,7 +23,7 @@ export default function KidsClasses() {
   const effective = useMemo(()=> (classes.length ? classes : [
     { name: "Nazareth", age_range: "Ages 3-9", description: "Our youngest learners discover God's love.", features: ["Bible Stories","Creative Crafts","Fun Songs","Play Time"], color: "from-pink-400 to-rose-500", icon: "Heart", capacity: "15-20 kids" },
     { name: "Galilee", age_range: "Ages 10-12", description: "Growing in faith through interactive lessons.", features: ["Interactive Lessons","Team Games","Memory Verses","Friendship Building"], color: "from-blue-400 to-cyan-500", icon: "Users", capacity: "20-25 kids" },
-    { name: "Jerusalem", age_range: "Ages 13-18", description: "Teens explore deeper faith concepts.", features: ["Deep Bible Study","Leadership Skills","Mission Projects","Peer Mentoring"], color: "from-purple-400 to-indigo-500", icon: "Star", capacity: "25-30 teens" },
+    { name: "Doxor", age_range: "Ages 13-18", description: "Teens explore deeper faith concepts.", features: ["Deep Bible Study","Leadership Skills","Mission Projects","Peer Mentoring"], color: "from-purple-400 to-indigo-500", icon: "Star", capacity: "25-30 teens" },
   ]), [classes])
 
   return (

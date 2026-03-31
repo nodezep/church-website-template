@@ -6,8 +6,8 @@ import Footer from "@/components/footer"
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: "Jerusalem Spiritual Centre - Faith, Hope, Love",
-  description: "Welcome to Jerusalem Spiritual Centre, where faith, hope, and love come together in community.",
+  title: "Doxor Christian Center - Faith, Hope, Love",
+  description: "Welcome to Doxor Christian Center, where faith, hope, and love come together in community.",
   generator: "v0.dev",
 }
 

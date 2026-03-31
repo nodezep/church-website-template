@@ -7,14 +7,13 @@ import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 
 // Import the image like a module
-import jscLogo from "@/components/assets/jsc.png"
 
 const navigation = [
   { name: "Home", href: "/" },
   { name: "About", href: "/about" },
   { name: "Ministries", href: "/ministries" },
   { name: "Kids", href: "/kids" },
-  { name: "JSC Zones", href: "/jsc-zones" },
+  { name: "DCC Zones", href: "/dcc-zones" },
   { name: "Events", href: "/events" },
   { name: "Sermons", href: "/sermons" },
   { name: "Contact", href: "/contact" },
@@ -32,11 +31,11 @@ export default function Navbar() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
               <img
-                src={jscLogo.src}   // ✅ use imported image
-                alt="JSC Logo"
+                src="/logo.png"   // ✅ use imported image
+                alt="DCC Logo"
                 className="h-18 w-auto rounded-md"
               />
-              {/* <span className="text-xl font-bold text-gray-900">JSC</span> */}
+              {/* <span className="text-xl font-bold text-gray-900">DCC</span> */}
             </Link>
           </div>
 
@@ -104,3 +103,4 @@ export default function Navbar() {
     </nav>
   )
 }
+

@@ -37,9 +37,9 @@ INSERT INTO jsc_zones (name, description, day, time, location, leader, focus) VA
 -- Seed JSC Zones (Life Groups)
 INSERT INTO public.jsc_zones (name, leader, description, meeting_day, meeting_time, contact_email, image_url)
 VALUES
-('Zone of Grace', 'Sarah Johnson', 'A small group focused on spiritual growth and mutual support through prayer and Bible study.', 'Tuesday', '7:00 PM', 'gracezone@jsc.org', '/placeholder.svg?height=300&width=500'),
-('Zone of Hope', 'Michael Brown', 'Dedicated to outreach and community service, bringing hope to those in need.', 'Thursday', '6:30 PM', 'hopezone@jsc.org', '/placeholder.svg?height=300&width=500'),
-('Zone of Wisdom', 'Dr. Emily White', 'Exploring deeper theological concepts and engaging in intellectual discussions about faith.', 'Wednesday', '8:00 PM', 'wisdomzone@jsc.org', '/placeholder.svg?height=300&width=500');
+('Zone of Grace', 'Sarah Johnson', 'A small group focused on spiritual growth and mutual support through prayer and Bible study.', 'Tuesday', '7:00 PM', 'gracezone@dcc.org', '/placeholder.svg?height=300&width=500'),
+('Zone of Hope', 'Michael Brown', 'Dedicated to outreach and community service, bringing hope to those in need.', 'Thursday', '6:30 PM', 'hopezone@dcc.org', '/placeholder.svg?height=300&width=500'),
+('Zone of Wisdom', 'Dr. Emily White', 'Exploring deeper theological concepts and engaging in intellectual discussions about faith.', 'Wednesday', '8:00 PM', 'wisdomzone@dcc.org', '/placeholder.svg?height=300&width=500');
 
 -- Insert sample ministries
 INSERT INTO ministries (title, description, features, icon) VALUES
@@ -57,10 +57,10 @@ VALUES
 
 -- Insert sample church settings
 INSERT INTO church_settings (setting_key, setting_value) VALUES
-('church_name', 'Jerusalem Spiritual Centre'),
+('church_name', 'Doxor Christian Center'),
 ('church_address', '123 Faith Street, Hope City, HC 12345'),
 ('church_phone', '(555) 123-4567'),
-('church_email', 'info@jsc.org'),
+('church_email', 'info@dcc.org'),
 ('service_times', 'Sunday: 8:00 AM, 10:30 AM, 6:00 PM'),
 ('pastor_name', 'Pastor John Smith'),
 ('mission_statement', 'To know Christ and make Him known in our community and beyond.');
@@ -69,10 +69,10 @@ INSERT INTO church_settings (setting_key, setting_value) VALUES
 INSERT INTO public.settings (setting_key, setting_value, description)
 VALUES
 ('church_info', '{
-  "name": "Jerusalem Spiritual Centre",
+  "name": "Doxor Christian Center",
   "address": "123 Divine Grace Avenue, Faith City, FC 12345, United Kingdom",
   "phone": "+44 20 1234 5678",
-  "email": "info@jsc.org"
+  "email": "info@dcc.org"
 }', 'General church contact and address information'),
 ('service_schedule', '{
   "sunday_worship": "10:00 AM - 12:00 PM",
@@ -80,14 +80,14 @@ VALUES
   "friday_prayer_meeting": "7:00 PM - 8:00 PM"
 }', 'Weekly service times'),
 ('social_media_links', '{
-  "facebook": "https://facebook.com/jscchurch",
-  "twitter": "https://twitter.com/jscchurch",
-  "instagram": "https://instagram.com/jscchurch",
-  "youtube": "https://youtube.com/jscchurch"
+  "facebook": "https://facebook.com/dccchurch",
+  "twitter": "https://twitter.com/dccchurch",
+  "instagram": "https://instagram.com/dccchurch",
+  "youtube": "https://youtube.com/dccchurch"
 }', 'Links to church social media profiles'),
 ('seo_settings', '{
-  "meta_title_suffix": " - Jerusalem Spiritual Centre",
-  "meta_description_default": "Official website of Jerusalem Spiritual Centre. Join us for worship, spiritual growth, and community outreach.",
+  "meta_title_suffix": " - Doxor Christian Center",
+  "meta_description_default": "Official website of Doxor Christian Center. Join us for worship, spiritual growth, and community outreach.",
   "keywords": ["church", "spiritual", "centre", "worship", "faith", "community", "london"]
 }', 'Search Engine Optimization settings');
 
