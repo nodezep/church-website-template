@@ -45,7 +45,7 @@ export interface Event {
   updated_at: string
 }
 
-export interface DCCZone {
+export interface JSCZone {
   id: string
   name: string
   description: string

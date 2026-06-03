@@ -184,7 +184,7 @@ export default function MinistriesPage() {
                 <Link href="/contact">Contact Us</Link>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link href="/dcc-zones">Join a DCC Zone</Link>
+                <Link href="/jsc-zones">Join a JSC Zone</Link>
               </Button>
             </div>
           </motion.div>

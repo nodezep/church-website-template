@@ -7,7 +7,6 @@ import Link from "next/link"
 import { useState, useEffect } from "react"
 import { fetchHomeContent } from "@/lib/supabase-helpers"
 
-// Define the correct type for children content
 interface ChildrenContent {
   title: string
   description: string
@@ -27,7 +26,6 @@ export default function ChildrensMinistry() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch the content with correct typing
         const contentData = await fetchHomeContent("children") as ChildrenContent | null
         if (contentData) {
           setContent(contentData)
@@ -35,6 +33,11 @@ export default function ChildrensMinistry() {
       } catch (error) {
         console.error("Error fetching data:", error)
       } finally {
+        setContent((prev) => ({
+          ...prev,
+          // If the fetched url is a standard placeholder, keep it but ensure styling handles it gracefully
+          imageUrl: prev.imageUrl || "/placeholder.svg?height=400&width=600&text=Children+Ministry"
+        }))
         setLoading(false)
       }
     }
@@ -42,45 +45,67 @@ export default function ChildrensMinistry() {
     fetchData()
   }, [])
 
-
-  if (loading) return <div className="py-20 bg-white animate-pulse"></div>
+  if (loading) return <div className="py-24 bg-white dark:bg-neutral-950 animate-pulse flex items-center justify-center"><div className="text-primary tracking-widest text-sm uppercase">Loading children&apos;s ministry...</div></div>
 
   return (
-    <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    <section className="py-24 bg-white dark:bg-neutral-950 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+          
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
+            className="lg:col-span-5 space-y-6"
           >
-            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-6">
-              <Baby className="w-8 h-8 text-purple-600" />
+            <div className="inline-flex w-14 h-14 bg-primary/10 border border-primary/20 rounded-2xl items-center justify-center">
+              <Baby className="w-7 h-7 text-primary" />
             </div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">{content.title}</h2>
-            <p className="text-lg text-gray-600 leading-relaxed mb-8">
+            
+            <span className="block text-primary font-medium tracking-[0.2em] uppercase text-xs">
+              Nurturing Faith Early
+            </span>
+            
+            <h2 className="text-4xl md:text-5xl font-bold font-serif text-neutral-900 dark:text-white leading-tight">
+              {content.title}
+            </h2>
+            
+            <p className="text-lg text-neutral-600 dark:text-neutral-350 leading-relaxed font-light">
               {content.description}
             </p>
-            <Link href="/kids">
-              <Button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold">
-                Learn More
-              </Button>
-            </Link>
+            
+            <div className="pt-4">
+              <Link href="/kids">
+                <Button className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-primary-foreground font-semibold px-8 py-4 rounded-full shadow-md hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.02] transition-all duration-300 border-0">
+                  Learn More
+                </Button>
+              </Link>
+            </div>
           </motion.div>
+          
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="relative"
+            className="lg:col-span-7 relative group"
           >
-            <img
-              className="w-full h-96 object-cover rounded-xl shadow-lg"
-              alt="Happy children in Sunday school class"
-              src={content.imageUrl}
-            />
+            {/* Elegant Glow Base */}
+            <div className="absolute -inset-3 bg-gradient-to-tr from-primary to-amber-400 rounded-3xl opacity-20 blur-xl group-hover:opacity-30 transition-opacity duration-500" />
+            
+            {/* Border Mask Wrapper */}
+            <div className="relative p-2.5 bg-white dark:bg-neutral-900 rounded-2xl shadow-xl border border-neutral-100 dark:border-neutral-800 overflow-hidden">
+              <img
+                className="w-full h-[400px] object-cover rounded-xl transition-transform duration-700 group-hover:scale-[1.02]"
+                alt="Happy children in Sunday school class"
+                src={content.imageUrl}
+              />
+            </div>
           </motion.div>
+          
         </div>
       </div>
     </section>
   )
-}
+}

@@ -38,7 +38,7 @@ const menuItems = [
     icon: Calendar,
   },
   {
-    title: "DCC Zones",
+    title: "JSC Zones",
     url: "/admin/zones",
     icon: Users,
   },
@@ -89,7 +89,7 @@ export default function AdminSidebar() {
         <div className="flex items-center space-x-2">
           <Church className="h-8 w-8 text-blue-600" />
           <div>
-            <h2 className="text-lg font-semibold">DCC Admin</h2>
+            <h2 className="text-lg font-semibold">JSC Admin</h2>
             <p className="text-sm text-gray-500">Content Management</p>
           </div>
         </div>

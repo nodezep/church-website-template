@@ -24,7 +24,7 @@ import { Plus, Edit, Trash2 } from "lucide-react"
 import { supabase } from "@/lib/supabase"
 import { useToast } from "@/components/ui/use-toast"
 
-interface DCCZone {
+interface JSCZone {
   id: string
   name: string
   description: string
@@ -40,10 +40,10 @@ interface DCCZone {
 }
 
 export default function AdminZonesPage() {
-  const [zones, setZones] = useState<DCCZone[]>([])
+  const [zones, setZones] = useState<JSCZone[]>([])
   const [loading, setLoading] = useState(true)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingZone, setEditingZone] = useState<DCCZone | null>(null)
+  const [editingZone, setEditingZone] = useState<JSCZone | null>(null)
   const { toast } = useToast()
 
   const [formData, setFormData] = useState({
@@ -65,10 +65,10 @@ export default function AdminZonesPage() {
 
   const fetchZones = async () => {
     try {
-      const { data, error } = await supabase.from("DCC_zones").select("*").order("name", { ascending: true })
+      const { data, error } = await supabase.from("jsc_zones").select("*").order("name", { ascending: true })
 
       if (error) {
-        console.error("Supabase fetch error:", error)
+        console.error("Supabase fetch error:", JSON.stringify(error, null, 2))
         throw new Error(error.message || "Failed to fetch zones")
       }
       
@@ -77,7 +77,7 @@ export default function AdminZonesPage() {
       console.error("Error fetching zones:", error)
       toast({
         title: "Error",
-        description: error.message || "Failed to fetch DCC zones",
+        description: error.message || "Failed to fetch JSC zones",
         variant: "destructive",
       })
     } finally {
@@ -125,12 +125,12 @@ export default function AdminZonesPage() {
       let result
       if (editingZone) {
         result = await supabase
-          .from("DCC_zones")
+          .from("jsc_zones")
           .update(submitData)
           .eq("id", editingZone.id)
       } else {
         result = await supabase
-          .from("DCC_zones")
+          .from("jsc_zones")
           .insert([submitData])
       }
 
@@ -146,7 +146,7 @@ export default function AdminZonesPage() {
 
       toast({
         title: "Success",
-        description: `DCC Zone ${editingZone ? 'updated' : 'created'} successfully`,
+        description: `JSC Zone ${editingZone ? 'updated' : 'created'} successfully`,
       })
 
       setIsDialogOpen(false)
@@ -157,13 +157,13 @@ export default function AdminZonesPage() {
       console.error("Error saving zone:", error)
       toast({
         title: "Error",
-        description: error.message || "Failed to save DCC zone",
+        description: error.message || "Failed to save JSC zone",
         variant: "destructive",
       })
     }
   }
 
-  const handleEdit = (zone: DCCZone) => {
+  const handleEdit = (zone: JSCZone) => {
     setEditingZone(zone)
     setFormData({
       name: zone.name,
@@ -181,22 +181,22 @@ export default function AdminZonesPage() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this DCC zone?")) return
+    if (!confirm("Are you sure you want to delete this JSC zone?")) return
 
     try {
       const { error } = await supabase
-        .from("DCC_zones")
+        .from("jsc_zones")
         .delete()
         .eq("id", id)
 
       if (error) {
-        console.error("Supabase delete error:", error)
+        console.error("Supabase delete error:", JSON.stringify(error, null, 2))
         throw new Error(error.message || "Failed to delete zone")
       }
 
       toast({
         title: "Success",
-        description: "DCC Zone deleted successfully",
+        description: "JSC Zone deleted successfully",
       })
 
       fetchZones()
@@ -204,7 +204,7 @@ export default function AdminZonesPage() {
       console.error("Error deleting zone:", error)
       toast({
         title: "Error",
-        description: error.message || "Failed to delete DCC zone",
+        description: error.message || "Failed to delete JSC zone",
         variant: "destructive",
       })
     }
@@ -232,28 +232,28 @@ export default function AdminZonesPage() {
   }
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64">Loading DCC zones...</div>
+    return <div className="flex items-center justify-center h-64">Loading JSC zones...</div>
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">DCC Zones Management</h1>
+          <h1 className="text-3xl font-bold text-gray-900">JSC Zones Management</h1>
           <p className="text-gray-600">Manage your church life groups and small groups</p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button onClick={openNewDialog}>
               <Plus className="h-4 w-4 mr-2" />
-              Add DCC Zone
+              Add JSC Zone
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>{editingZone ? "Edit DCC Zone" : "Add New DCC Zone"}</DialogTitle>
+              <DialogTitle>{editingZone ? "Edit JSC Zone" : "Add New JSC Zone"}</DialogTitle>
               <DialogDescription>
-                {editingZone ? "Update the zone details below." : "Fill in the details for the new DCC zone."}
+                {editingZone ? "Update the zone details below." : "Fill in the details for the new JSC zone."}
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -383,7 +383,7 @@ export default function AdminZonesPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>All DCC Zones</CardTitle>
+          <CardTitle>All JSC Zones</CardTitle>
           <CardDescription>Manage your church life groups</CardDescription>
         </CardHeader>
         <CardContent>

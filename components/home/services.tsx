@@ -13,7 +13,6 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel"
 
-// Define the correct type for services content
 interface Service {
   title: string
   time: string
@@ -63,7 +62,6 @@ export default function Services() {
     fetchServices()
   }, [])
 
-  // Autoplay: advance every 3 seconds
   useEffect(() => {
     if (!api) return
 
@@ -73,62 +71,81 @@ export default function Services() {
           console.warn("Services autoplay scrollNext error:", err)
         })
       } catch (e) {
-        // ignore synchronous errors during teardown
+        // ignore
       }
-    }, 3000)
+    }, 4000)
 
     return () => clearInterval(interval)
   }, [api])
 
-  if (loading) return <div className="py-20 bg-gray-50 animate-pulse"></div>
+  if (loading) return <div className="py-24 bg-neutral-950 animate-pulse flex items-center justify-center"><div className="text-primary tracking-widest text-sm uppercase">Loading services...</div></div>
 
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Service Times</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Join us for worship, fellowship, and spiritual growth throughout the week
+    <section className="py-24 bg-neutral-900 border-y border-neutral-800 text-white relative overflow-hidden">
+      <div className="absolute top-[-30%] left-[20%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[160px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 relative z-10">
+        <div className="text-center mb-20">
+          <span className="text-primary font-medium tracking-[0.25em] uppercase text-xs">
+            Worship With Us
+          </span>
+          <h2 className="text-4xl md:text-5xl font-bold font-serif mt-3 mb-4 text-white">
+            Service Times
+          </h2>
+          <div className="h-[1px] w-20 bg-primary/45 mx-auto mb-6" />
+          <p className="text-lg text-neutral-400 max-w-2xl mx-auto font-light leading-relaxed">
+            Join us for worship, fellowship, and spiritual growth throughout the week.
           </p>
         </div>
 
-        <div className="relative">
+        <div className="relative px-6">
           <Carousel className="w-full" opts={{ align: "start", loop: true }} setApi={setApi}>
             <CarouselContent>
               {services.map((service, index) => {
-                let IconComponent = Heart // Default icon
+                let IconComponent = Heart
                 if (service.icon === "BookOpen") IconComponent = BookOpen
                 if (service.icon === "Users") IconComponent = Users
 
                 return (
-                  <CarouselItem key={index} className="md:basis-1/3">
+                  <CarouselItem key={index} className="md:basis-1/3 p-4">
                     <motion.div
                       initial={{ opacity: 0, y: 30 }}
                       whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: index * 0.1 }}
-                      className="service-card bg-white p-8 rounded-xl text-center"
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.8, delay: index * 0.1 }}
+                      className="group service-card bg-neutral-950/40 backdrop-blur-md p-8 rounded-2xl border border-neutral-800/80 hover:border-primary/50 transition-all duration-500 h-full flex flex-col items-center text-center relative overflow-hidden"
                     >
-                      <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <IconComponent className="w-8 h-8 text-blue-600" />
+                      <div className="absolute -right-8 -top-8 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-colors" />
+                      
+                      <div className="w-16 h-16 bg-primary/10 border border-primary/20 rounded-2xl flex items-center justify-center mb-8 transform -rotate-6 group-hover:rotate-0 transition-transform duration-500">
+                        <IconComponent className="w-8 h-8 text-primary" />
                       </div>
-                      <h3 className="text-2xl font-bold text-gray-900 mb-2">{service.title}</h3>
-                      <div className="flex items-center justify-center text-blue-600 font-semibold mb-4">
-                        <Clock className="w-5 h-5 mr-2" />
+                      
+                      <h3 className="text-2xl font-bold font-serif text-neutral-100 mb-3 group-hover:text-primary transition-colors">
+                        {service.title}
+                      </h3>
+                      
+                      <div className="inline-flex items-center bg-primary/10 text-primary border border-primary/20 text-sm font-medium px-4 py-1.5 rounded-full mb-6">
+                        <Clock className="w-4 h-4 mr-2" />
                         {service.time}
                       </div>
-                      <p className="text-gray-600">{service.description}</p>
+                      
+                      <p className="text-neutral-400 text-sm leading-relaxed font-light">
+                        {service.description}
+                      </p>
                     </motion.div>
                   </CarouselItem>
                 )
               })}
             </CarouselContent>
-            <CarouselPrevious className="-left-4 md:-left-12" />
-            <CarouselNext className="-right-4 md:-right-12" />
+            <CarouselPrevious className="-left-4 md:-left-8 border-neutral-800 bg-neutral-950 text-neutral-400 hover:bg-primary hover:text-white" />
+            <CarouselNext className="-right-4 md:-right-8 border-neutral-800 bg-neutral-950 text-neutral-400 hover:bg-primary hover:text-white" />
           </Carousel>
         </div>
       </div>
     </section>
   )
 }
+
 
 // end of file

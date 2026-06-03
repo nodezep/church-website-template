@@ -10,7 +10,7 @@ import { useEffect, useState } from "react"
 import LogoLoader from "@/components/logo-loader"
 import { createBrowserClient } from "@supabase/ssr"
 
-interface DCCZone {
+interface JSCZone {
   id: string
   name: string
   description: string
@@ -24,8 +24,8 @@ interface DCCZone {
   color: string
 }
 
-export default function DCCZonesPage() {
-  const [zones, setZones] = useState<DCCZone[]>([])
+export default function JSCZonesPage() {
+  const [zones, setZones] = useState<JSCZone[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -46,7 +46,7 @@ export default function DCCZonesPage() {
         if (supabaseError) throw supabaseError
         if (!data) throw new Error("No zones found")
 
-        setZones(data as DCCZone[])
+        setZones(data as JSCZone[])
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to fetch zones")
         console.error("Fetch error:", err)
@@ -80,7 +80,6 @@ export default function DCCZonesPage() {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
       <section className="pt-24 pb-16 hero-gradient">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -89,7 +88,7 @@ export default function DCCZonesPage() {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">DCC Zones</h1>
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">JSC Zones</h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Life Groups designed to help you grow in faith, build meaningful relationships, and discover your purpose
               in community
@@ -98,13 +97,12 @@ export default function DCCZonesPage() {
         </div>
       </section>
 
-      {/* What are DCC Zones */}
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">What are DCC Zones?</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-6">What are JSC Zones?</h2>
             <p className="text-lg text-gray-600 leading-relaxed mb-8">
-              DCC Zones are small, intimate groups where members of our church family come together to study God's Word,
+              JSC Zones are small, intimate groups where members of our church family come together to study God&apos;s Word,
               pray for one another, and build lasting friendships. These groups meet regularly throughout the week in
               various locations, providing opportunities for deeper connection and spiritual growth.
             </p>
@@ -121,21 +119,20 @@ export default function DCCZonesPage() {
                   <Target className="w-8 h-8 text-green-600" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Growth</h3>
-                <p className="text-gray-600">Deepen your understanding of God's Word and faith</p>
+                <p className="text-gray-600">Deepen your understanding of God&apos;s Word and faith</p>
               </div>
               <div className="text-center">
                 <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <User className="w-8 h-8 text-purple-600" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Support</h3>
-                <p className="text-gray-600">Find encouragement and prayer support in life's journey</p>
+                <p className="text-gray-600">Find encouragement and prayer support in life&apos;s journey</p>
               </div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* DCC Zones Grid */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -158,7 +155,7 @@ export default function DCCZonesPage() {
                       alt={zone.name}
                       className="w-full h-48 object-cover rounded-t-lg"
                     />
-                    <Badge className={`absolute top-4 right-4 ${zone.color || 'bg-blue-500'} text-white`}>
+                    <Badge className={`absolute top-4 right-4 ${zone.color || "bg-blue-500"} text-white`}>
                       {zone.members || 0} members
                     </Badge>
                   </div>
@@ -195,13 +192,12 @@ export default function DCCZonesPage() {
         </div>
       </section>
 
-      {/* Call to Action */}
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
             <h2 className="text-4xl font-bold text-gray-900 mb-6">Ready to Connect?</h2>
             <p className="text-xl text-gray-600 mb-8">
-              Don't see a zone that fits? We'd love to help you find the perfect group or even start a new one!
+              Don&apos;t see a zone that fits? We&apos;d love to help you find the perfect group or even start a new one!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">

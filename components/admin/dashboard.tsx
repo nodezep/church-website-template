@@ -47,7 +47,7 @@ export default function AdminDashboard() {
         [
           supabase.from("sermons").select("id", { count: "exact" }),
           supabase.from("events").select("id", { count: "exact" }),
-          supabase.from("DCC_zones").select("id", { count: "exact" }),
+          supabase.from("jsc_zones").select("id", { count: "exact" }),
           supabase.from("contact_messages").select("id", { count: "exact" }),
           supabase.from("prayer_requests").select("id", { count: "exact" }),
           supabase.from("ministries").select("id", { count: "exact" }),
@@ -130,7 +130,7 @@ export default function AdminDashboard() {
       color: "bg-green-500",
     },
     {
-      title: "Manage DCC Zones",
+      title: "Manage JSC Zones",
       description: "Add or edit life groups",
       href: "/admin/zones",
       icon: Users,
@@ -154,7 +154,7 @@ export default function AdminDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">Welcome to the DCC admin panel</p>
+          <p className="text-gray-600">Welcome to the JSC admin panel</p>
         </div>
         <Button asChild variant="outline">
           <Link href="/" target="_blank" passHref legacyBehavior>
@@ -192,7 +192,7 @@ export default function AdminDashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">DCC Zones</CardTitle>
+            <CardTitle className="text-sm font-medium">JSC Zones</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
