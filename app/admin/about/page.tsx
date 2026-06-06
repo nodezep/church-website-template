@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -237,11 +237,8 @@ export default function AdminAboutPage() {
   const [loading, setLoading] = useState(true)
   const { toast } = useToast()
 
-  useEffect(() => {
-    fetchAboutData()
-  }, [])
-
-  const fetchAboutData = async () => {
+  // Define fetchAboutData FIRST using useCallback
+  const fetchAboutData = useCallback(async () => {
     try {
       setLoading(true)
       
@@ -276,7 +273,12 @@ export default function AdminAboutPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [toast])
+
+  // THEN use it in useEffect
+  useEffect(() => {
+    fetchAboutData()
+  }, [fetchAboutData])
 
   const handleSaveAboutData = async (e: React.FormEvent) => {
     e.preventDefault()

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import LogoLoader from "@/components/logo-loader"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -64,12 +64,10 @@ export default function AdminEventsPage() {
     { id: "special", name: "Special", color: "bg-red-500" },
   ]
 
-  useEffect(() => {
-    fetchEvents()
-  }, [])
-
-  const fetchEvents = async () => {
+  // Define fetchEvents FIRST using useCallback
+  const fetchEvents = useCallback(async () => {
     try {
+      setLoading(true)
       const { data, error } = await supabase
         .from("events")
         .select("*")
@@ -87,7 +85,12 @@ export default function AdminEventsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [toast])
+
+  // THEN use it in useEffect
+  useEffect(() => {
+    fetchEvents()
+  }, [fetchEvents])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

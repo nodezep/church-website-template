@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -263,23 +263,8 @@ export default function AdminKidsPage() {
   const [newImageUrl, setNewImageUrl] = useState("")
   const [newImageCaption, setNewImageCaption] = useState("")
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        setLoading(true)
-        // Load only the active section initially for speed
-        await loadSection(activeTab)
-      } catch (err) {
-        console.error(err)
-        toast({ title: "Error", description: "Failed to load kids content", variant: "destructive" })
-      } finally {
-        setLoading(false)
-      }
-    }
-    load()
-  }, [supabase, toast])
-
-  const loadSection = async (sectionKey: string) => {
+  // Define loadSection FIRST using useCallback
+  const loadSection = useCallback(async (sectionKey: string) => {
     try {
       // Content
       const { data: contentRow } = await supabase
@@ -308,7 +293,23 @@ export default function AdminKidsPage() {
     } catch (err) {
       console.error("loadSection error", err)
     }
-  }
+  }, [supabase])
+
+  // THEN use it in useEffect
+  useEffect(() => {
+    const load = async () => {
+      try {
+        setLoading(true)
+        await loadSection(activeTab)
+      } catch (err) {
+        console.error(err)
+        toast({ title: "Error", description: "Failed to load kids content", variant: "destructive" })
+      } finally {
+        setLoading(false)
+      }
+    }
+    load()
+  }, [activeTab, loadSection, toast])
 
   const saveSectionContent = async (sectionKey: string) => {
     try {
@@ -438,8 +439,7 @@ export default function AdminKidsPage() {
     if (!contentMap[activeTab] || !ctaMap[activeTab] || !galleryMap[activeTab]) {
       loadSection(activeTab)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab])
+  }, [activeTab, loadSection, contentMap, ctaMap, galleryMap])
 
   if (loading) {
     return (
@@ -611,5 +611,3 @@ export default function AdminKidsPage() {
     </div>
   )
 }
-
-

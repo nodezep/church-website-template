@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Menu, X, Sun, Moon } from "lucide-react"
 import { useTheme } from "next-themes"
@@ -32,7 +33,7 @@ export default function Navbar() {
     }
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+  }, []) // Empty dependency array is fine here
 
   return (
     <nav 
@@ -48,10 +49,13 @@ export default function Navbar() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-3 group">
               <div className="relative overflow-hidden rounded-lg p-0.5 bg-gradient-to-tr from-primary to-amber-300">
-                <img
+                <Image
                   src="/logo.png"
                   alt="JSC Logo"
+                  width={48}
+                  height={48}
                   className="h-12 w-auto rounded-md bg-white object-contain transition-transform duration-500 group-hover:scale-105"
+                  priority
                 />
               </div>
               <span className="text-xl font-bold font-serif tracking-wider text-neutral-800 dark:text-neutral-100 group-hover:text-primary transition-colors">

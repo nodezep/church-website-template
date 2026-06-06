@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -53,12 +53,10 @@ export default function AdminBlogPage() {
     published: false,
   })
 
-  useEffect(() => {
-    fetchPosts()
-  }, [])
-
-  const fetchPosts = async () => {
+  // Define fetchPosts FIRST using useCallback
+  const fetchPosts = useCallback(async () => {
     try {
+      setLoading(true)
       const { data, error } = await supabase.from("blog_posts").select("*").order("created_at", { ascending: false })
 
       if (error) throw error
@@ -73,7 +71,12 @@ export default function AdminBlogPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [toast])
+
+  // THEN use it in useEffect
+  useEffect(() => {
+    fetchPosts()
+  }, [fetchPosts])
 
   const generateSlug = (title: string) => {
     return title
