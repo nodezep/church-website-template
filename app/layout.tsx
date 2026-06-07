@@ -7,8 +7,8 @@ import { Toaster } from "@/components/ui/toaster"
 import { ThemeProvider } from "@/components/theme-provider"
 
 export const metadata: Metadata = {
-  title: "Doxor Christian Center - Faith, Hope, Love",
-  description: "Welcome to Doxor Christian Center, where faith, hope, and love come together in community.",
+  title: "Jerusalem Spiritual Center - Faith, Hope, Love",
+  description: "Welcome to Jerusalem Spiritual Center, where faith, hope, and love come together in community.",
   generator: "v0.dev",
 }
 
